@@ -1,0 +1,118 @@
+﻿@using Shared.Models
+
+<div class="space-y-4">
+    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+        <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+        </svg>
+        Skills & Expertise
+    </h3>
+    
+    @if (Skills?.Any() == true)
+    {
+        <div class="grid gap-4">
+            @foreach (var skill in Skills)
+            {
+                <div class="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all duration-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-semibold text-gray-800 text-lg">@skill.Name</h4>
+                        <span class="text-sm font-medium @GetLevelColor(skill.Level) px-3 py-1 rounded-full">
+                            @skill.Level
+                        </span>
+                    </div>
+                    
+                    <!-- Progress bar -->
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                        <div class="h-2.5 rounded-full transition-all duration-1000 ease-out @GetProgressBarColor(skill.Level)" 
+                             style="width: @GetProgressPercentage(skill.Level)%"></div>
+                    </div>
+                    
+                    <!-- Level indicator with icon -->
+                    <div class="flex items-center justify-between text-xs text-gray-500">
+                        <span>Beginner</span>
+                        <div class="flex items-center space-x-1">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <div class="w-2 h-2 rounded-full @(GetStarColor(skill.Level, i))"></div>
+                            }
+                        </div>
+                        <span>Expert</span>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-8 text-gray-500">
+            <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+            </svg>
+            <p class="text-lg font-medium">No skills added yet</p>
+            <p class="text-sm">Skills will appear here once they're added to your profile.</p>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<Skill>? Skills { get; set; }
+
+    private string GetLevelColor(string level)
+    {
+        return level?.ToLower() switch
+        {
+            "beginner" => "bg-red-100 text-red-800",
+            "novice" => "bg-orange-100 text-orange-800",
+            "intermediate" => "bg-yellow-100 text-yellow-800",
+            "advanced" => "bg-blue-100 text-blue-800",
+            "expert" => "bg-green-100 text-green-800",
+            "master" => "bg-purple-100 text-purple-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+    }
+
+    private string GetProgressBarColor(string level)
+    {
+        return level?.ToLower() switch
+        {
+            "beginner" => "bg-gradient-to-r from-red-400 to-red-500",
+            "novice" => "bg-gradient-to-r from-orange-400 to-orange-500",
+            "intermediate" => "bg-gradient-to-r from-yellow-400 to-yellow-500",
+            "advanced" => "bg-gradient-to-r from-blue-400 to-blue-500",
+            "expert" => "bg-gradient-to-r from-green-400 to-green-500",
+            "master" => "bg-gradient-to-r from-purple-400 to-purple-500",
+            _ => "bg-gradient-to-r from-gray-400 to-gray-500"
+        };
+    }
+
+    private int GetProgressPercentage(string level)
+    {
+        return level?.ToLower() switch
+        {
+            "beginner" => 20,
+            "novice" => 35,
+            "intermediate" => 50,
+            "advanced" => 70,
+            "expert" => 85,
+            "master" => 100,
+            _ => 0
+        };
+    }
+
+    private string GetStarColor(string level, int starNumber)
+    {
+        int levelValue = level?.ToLower() switch
+        {
+            "beginner" => 1,
+            "novice" => 2,
+            "intermediate" => 3,
+            "advanced" => 4,
+            "expert" => 5,
+            "master" => 5,
+            _ => 0
+        };
+
+        return starNumber <= levelValue ? "bg-yellow-400" : "bg-gray-200";
+    }
+}

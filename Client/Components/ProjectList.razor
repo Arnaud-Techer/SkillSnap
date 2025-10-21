@@ -1,0 +1,104 @@
+﻿@using Shared.Models
+
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <h3 class="text-xl font-bold text-gray-800 flex items-center">
+            <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Featured Projects
+        </h3>
+        <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+            @(Projects?.Count ?? 0) projects
+        </span>
+    </div>
+    
+    @if (Projects?.Any() == true)
+    {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach (var project in Projects)
+            {
+                <div class="group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                    <!-- Project Image -->
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="@(string.IsNullOrEmpty(project.ImageUrl) ? "https://via.placeholder.com/400x300/6366f1/ffffff?text=Project" : project.ImageUrl)" 
+                             alt="@project.Title" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        
+                        <!-- Overlay buttons -->
+                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <button class="bg-white/90 backdrop-blur-sm text-gray-700 p-2 rounded-full hover:bg-white transition-colors duration-200">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Project Content -->
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-200">
+                            @project.Title
+                        </h4>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
+                            @project.Description
+                        </p>
+                        
+                        <!-- Project Actions -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex space-x-2">
+                                <button class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                                    View Project
+                                </button>
+                                <button class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-all duration-200">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <!-- Project ID badge -->
+                            <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">
+                                #@project.Id
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <!-- View All Projects Button -->
+        @if (Projects.Count > 6)
+        {
+            <div class="text-center mt-8">
+                <button class="bg-white border-2 border-blue-500 text-blue-600 px-8 py-3 rounded-lg font-medium hover:bg-blue-50 transition-all duration-200 transform hover:scale-105">
+                    View All Projects
+                </button>
+            </div>
+        }
+    }
+    else
+    {
+        <!-- Empty State -->
+        <div class="text-center py-12">
+            <div class="bg-gray-100 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">No projects yet</h3>
+            <p class="text-gray-500 mb-6 max-w-md mx-auto">
+                Projects will appear here once they're added to your portfolio. Showcase your work and let others see what you can create!
+            </p>
+            <button class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                Add Your First Project
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<Project>? Projects { get; set; }
+}

@@ -1,0 +1,76 @@
+﻿@using Shared.Models
+
+<div class="max-w-md mx-auto bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+    <!-- Header with gradient background -->
+    <div class="h-32 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 relative">
+        <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+    </div>
+    
+    <!-- Profile section -->
+    <div class="px-6 pb-6 -mt-16 relative">
+        <!-- Profile image -->
+        <div class="flex justify-center">
+            <div class="relative">
+                <img src="@(string.IsNullOrEmpty(User?.ProfileImageUrl) ? "https://via.placeholder.com/120x120/6366f1/ffffff?text=👤" : User.ProfileImageUrl)" 
+                     alt="@User?.Name's profile picture" 
+                     class="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover" />
+                <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
+            </div>
+        </div>
+        
+        <!-- User info -->
+        <div class="text-center mt-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-1">@User?.Name</h2>
+            <p class="text-gray-600 text-sm mb-4 leading-relaxed">@User?.Bio</p>
+            
+            <!-- Stats -->
+            <div class="flex justify-center space-x-6 mb-6">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600">@(User?.Projects?.Count ?? 0)</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide">Projects</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-purple-600">@(User?.Skills?.Count ?? 0)</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide">Skills</div>
+                </div>
+            </div>
+            
+            <!-- Action buttons -->
+            <div class="flex space-x-3">
+                <button class="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                    View Portfolio
+                </button>
+                <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-all duration-200">
+                    Contact
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Skills preview -->
+    @if (User?.Skills?.Any() == true)
+    {
+        <div class="px-6 pb-4">
+            <h3 class="text-sm font-semibold text-gray-700 mb-3">Top Skills</h3>
+            <div class="flex flex-wrap gap-2">
+                @foreach (var skill in User.Skills.Take(4))
+                {
+                    <span class="px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-xs font-medium rounded-full border border-blue-200">
+                        @skill.Name
+                    </span>
+                }
+                @if (User.Skills.Count > 4)
+                {
+                    <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
+                        +@(User.Skills.Count - 4) more
+                    </span>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public PortfolioUser? User { get; set; }
+}

@@ -1,0 +1,55 @@
+# Build results
+bin/
+obj/
+out/
+.vs/
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# ASP.NET Core secrets
+secrets.json
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet packages
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+*.nuspec
+
+# Entity Framework
+Migrations/
+*.db
+# Logs
+*.log
+
+# Publish output
+wwwroot/dist/
+wwwroot/node_modules/
+publish/
+*.publish.xml
+
+# Node.js (if using npm or yarn for frontend)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Static assets cache
+wwwroot/.cache/
+
+# Others
+*.DS_Store
+Thumbs.db
