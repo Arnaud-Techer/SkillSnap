@@ -17,13 +17,20 @@ public class PortfolioUsersController : ControllerBase
 
     // GET: api/PortfolioUsers
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<PortfolioUser>>> GetPortfolioUsers()
+    public async Task<ActionResult<IEnumerable<object>>> GetPortfolioUsers()
     {
         try
         {
             var portfolioUsers = await _context.PortfolioUsers
-                .Include(p => p.Projects)
-                .Include(p => p.Skills)
+                .Select(u => new
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Bio = u.Bio,
+                    ProfileImageUrl = u.ProfileImageUrl,
+                    ProjectCount = u.Projects.Count(), // EF Core translates this to SQL COUNT
+                    SkillCount = u.Skills.Count()      // EF Core translates this to SQL COUNT
+                })
                 .ToListAsync();
 
             return Ok(portfolioUsers);
@@ -60,13 +67,20 @@ public class PortfolioUsersController : ControllerBase
 
     // GET: api/PortfolioUsers/search?name=john
     [HttpGet("search")]
-    public async Task<ActionResult<IEnumerable<PortfolioUser>>> SearchPortfolioUsers([FromQuery] string? name = null)
+    public async Task<ActionResult<IEnumerable<object>>> SearchPortfolioUsers([FromQuery] string? name = null)
     {
         try
         {
             var query = _context.PortfolioUsers
-                .Include(p => p.Projects)
-                .Include(p => p.Skills)
+                .Select(u => new
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Bio = u.Bio,
+                    ProfileImageUrl = u.ProfileImageUrl,
+                    ProjectCount = u.Projects.Count(),
+                    SkillCount = u.Skills.Count()
+                })
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(name))
@@ -248,6 +262,34 @@ public class PortfolioUsersController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(500, new { message = "An error occurred while retrieving skills.", error = ex.Message });
+        }
+    }
+
+    // GET: api/PortfolioUsers/5/statistics
+    [HttpGet("{id}/statistics")]
+    public async Task<ActionResult<object>> GetPortfolioUserStatistics(int id)
+    {
+        try
+        {
+            var portfolioUser = await _context.PortfolioUsers.FindAsync(id);
+            if (portfolioUser == null)
+            {
+                return NotFound(new { message = $"Portfolio user with ID {id} not found." });
+            }
+
+            var statistics = new
+            {
+                ProjectCount = await _context.Projects
+                    .CountAsync(p => p.PortfolioUserId == id),
+                SkillCount = await _context.Skills
+                    .CountAsync(s => s.PortfolioUserId == id)
+            };
+            
+            return Ok(statistics);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "An error occurred while retrieving statistics.", error = ex.Message });
         }
     }
 

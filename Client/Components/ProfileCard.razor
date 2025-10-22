@@ -1,4 +1,5 @@
 ﻿@using Shared.Models
+@using Client.Models
 
 <div class="max-w-md mx-auto bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300">
     <!-- Header with gradient background -->
@@ -14,7 +15,11 @@
                 <img src="@(string.IsNullOrEmpty(User?.ProfileImageUrl) ? "https://via.placeholder.com/120x120/6366f1/ffffff?text=👤" : User.ProfileImageUrl)" 
                      alt="@User?.Name's profile picture" 
                      class="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover" />
-                <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
+                <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                    <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
             </div>
         </div>
         
@@ -26,51 +31,74 @@
             <!-- Stats -->
             <div class="flex justify-center space-x-6 mb-6">
                 <div class="text-center">
-                    <div class="text-2xl font-bold text-blue-600">@(User?.Projects?.Count ?? 0)</div>
+                    <div class="text-2xl font-bold text-blue-600">@(User?.ProjectCount ?? 0)</div>
                     <div class="text-xs text-gray-500 uppercase tracking-wide">Projects</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-2xl font-bold text-purple-600">@(User?.Skills?.Count ?? 0)</div>
+                    <div class="text-2xl font-bold text-purple-600">@(User?.SkillCount ?? 0)</div>
                     <div class="text-xs text-gray-500 uppercase tracking-wide">Skills</div>
                 </div>
             </div>
             
             <!-- Action buttons -->
-            <div class="flex space-x-3">
-                <button class="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
-                    View Portfolio
+            <div class="space-y-3">
+                <button @onclick="() => OnViewSkills.InvokeAsync(User?.Id ?? 0)" 
+                        class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-3 rounded-lg text-sm font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 flex items-center justify-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                    View Full Skills (@(User?.SkillCount ?? 0))
                 </button>
-                <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-all duration-200">
-                    Contact
+                
+                <button @onclick="() => OnViewProjects.InvokeAsync(User?.Id ?? 0)" 
+                        class="w-full bg-gradient-to-r from-green-500 to-blue-600 text-white px-4 py-3 rounded-lg text-sm font-medium hover:from-green-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 flex items-center justify-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                    View Full Projects (@(User?.ProjectCount ?? 0))
+                </button>
+                
+                <button @onclick="() => OnContact.InvokeAsync(User)" 
+                        class="w-full border-2 border-gray-300 text-gray-700 px-4 py-3 rounded-lg text-sm font-medium hover:bg-gray-50 transition-all duration-200 flex items-center justify-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Contact Developer
                 </button>
             </div>
         </div>
     </div>
     
-    <!-- Skills preview -->
-    @if (User?.Skills?.Any() == true)
-    {
-        <div class="px-6 pb-4">
-            <h3 class="text-sm font-semibold text-gray-700 mb-3">Top Skills</h3>
-            <div class="flex flex-wrap gap-2">
-                @foreach (var skill in User.Skills.Take(4))
-                {
-                    <span class="px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-xs font-medium rounded-full border border-blue-200">
-                        @skill.Name
-                    </span>
-                }
-                @if (User.Skills.Count > 4)
-                {
-                    <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
-                        +@(User.Skills.Count - 4) more
-                    </span>
-                }
+    <!-- Quick preview section -->
+    <div class="px-6 pb-4">
+        <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg p-4 border border-gray-100">
+            <h3 class="text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                <svg class="w-4 h-4 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Quick Overview
+            </h3>
+            <div class="flex justify-between text-xs text-gray-600">
+                <span>@(User?.ProjectCount ?? 0) Projects Available</span>
+                <span>@(User?.SkillCount ?? 0) Skills Listed</span>
             </div>
+            <p class="text-xs text-gray-500 mt-2">
+                Click the buttons above to explore detailed information about this developer's work and expertise.
+            </p>
         </div>
-    }
+    </div>
 </div>
 
 @code {
     [Parameter]
-    public PortfolioUser? User { get; set; }
+    public PortfolioUserSummary? User { get; set; }
+    
+    [Parameter]
+    public EventCallback<int> OnViewSkills { get; set; }
+    
+    [Parameter]
+    public EventCallback<int> OnViewProjects { get; set; }
+    
+    [Parameter]
+    public EventCallback<PortfolioUserSummary> OnContact { get; set; }
 }

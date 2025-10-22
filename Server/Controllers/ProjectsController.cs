@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Shared.Models;
 
 namespace Server.Controllers;
@@ -9,10 +10,12 @@ namespace Server.Controllers;
 public class ProjectsController : ControllerBase
 {
     private readonly SkillSnapContext _context;
+    private readonly IMemoryCache _cache;
 
-    public ProjectsController(SkillSnapContext context)
+    public ProjectsController(SkillSnapContext context, IMemoryCache cache)
     {
         _context = context;
+        _cache = cache;
     }
 
     // GET: api/Projects
@@ -21,10 +24,25 @@ public class ProjectsController : ControllerBase
     {
         try
         {
+            const string cacheKey = "all_projects";
+            
+            if (_cache.TryGetValue(cacheKey, out List<Project>? cachedProjects))
+            {
+                return Ok(cachedProjects);
+            }
+
             var projects = await _context.Projects
                 .Include(p => p.PortfolioUser)
                 .ToListAsync();
 
+            var cacheOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30),
+                Priority = CacheItemPriority.Normal,
+                SlidingExpiration = TimeSpan.FromMinutes(10)
+            };
+
+            _cache.Set(cacheKey, projects, cacheOptions);
             return Ok(projects);
         }
         catch (Exception ex)
@@ -93,6 +111,13 @@ public class ProjectsController : ControllerBase
     {
         try
         {
+            string cacheKey = $"projects_user_{portfolioUserId}";
+            
+            if (_cache.TryGetValue(cacheKey, out List<Project>? cachedProjects))
+            {
+                return Ok(cachedProjects);
+            }
+
             var portfolioUser = await _context.PortfolioUsers.FindAsync(portfolioUserId);
             if (portfolioUser == null)
             {
@@ -104,6 +129,14 @@ public class ProjectsController : ControllerBase
                 .Include(p => p.PortfolioUser)
                 .ToListAsync();
 
+            var cacheOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30),
+                Priority = CacheItemPriority.Normal,
+                SlidingExpiration = TimeSpan.FromMinutes(10)
+            };
+
+            _cache.Set(cacheKey, projects, cacheOptions);
             return Ok(projects);
         }
         catch (Exception ex)
@@ -148,6 +181,9 @@ public class ProjectsController : ControllerBase
 
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
+
+            // Invalidate caches for this user
+            InvalidateUserCaches(project.PortfolioUserId);
 
             // Return the project with the portfolio user included
             var createdProject = await _context.Projects
@@ -207,6 +243,9 @@ public class ProjectsController : ControllerBase
                 return NotFound(new { message = $"Project with ID {id} not found." });
             }
 
+            // Store the original user ID for cache invalidation
+            var originalUserId = existingProject.PortfolioUserId;
+
             // Update properties
             existingProject.Title = project.Title;
             existingProject.Description = project.Description;
@@ -218,6 +257,13 @@ public class ProjectsController : ControllerBase
             try
             {
                 await _context.SaveChangesAsync();
+                
+                // Invalidate caches for both original and new user (in case user changed)
+                InvalidateUserCaches(originalUserId);
+                if (originalUserId != project.PortfolioUserId)
+                {
+                    InvalidateUserCaches(project.PortfolioUserId);
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -251,8 +297,12 @@ public class ProjectsController : ControllerBase
                 return NotFound(new { message = $"Project with ID {id} not found." });
             }
 
+            var userId = project.PortfolioUserId;
             _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
+
+            // Invalidate caches for this user
+            InvalidateUserCaches(userId);
 
             return NoContent();
         }
@@ -268,6 +318,13 @@ public class ProjectsController : ControllerBase
     {
         try
         {
+            const string cacheKey = "projects_statistics";
+            
+            if (_cache.TryGetValue(cacheKey, out object? cachedStats))
+            {
+                return Ok(cachedStats);
+            }
+
             var totalProjects = await _context.Projects.CountAsync();
             var projectsByUser = await _context.Projects
                 .GroupBy(p => p.PortfolioUserId)
@@ -276,13 +333,23 @@ public class ProjectsController : ControllerBase
 
             var averageProjectsPerUser = projectsByUser.Any() ? projectsByUser.Average(x => x.Count) : 0;
 
-            return Ok(new
+            var statistics = new
             {
                 TotalProjects = totalProjects,
                 TotalUsers = projectsByUser.Count,
                 AverageProjectsPerUser = Math.Round(averageProjectsPerUser, 2),
                 ProjectsByUser = projectsByUser
-            });
+            };
+
+            // Cache statistics for 15 minutes (shorter than detailed data)
+            var cacheOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15),
+                Priority = CacheItemPriority.Normal
+            };
+
+            _cache.Set(cacheKey, statistics, cacheOptions);
+            return Ok(statistics);
         }
         catch (Exception ex)
         {
@@ -293,5 +360,12 @@ public class ProjectsController : ControllerBase
     private bool ProjectExists(int id)
     {
         return _context.Projects.Any(e => e.Id == id);
+    }
+
+    private void InvalidateUserCaches(int userId)
+    {
+        _cache.Remove($"projects_user_{userId}");
+        _cache.Remove("all_projects");
+        _cache.Remove("projects_statistics");
     }
 }

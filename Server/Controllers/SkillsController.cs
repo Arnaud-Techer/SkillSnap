@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Shared.Models;
 
 namespace Server.Controllers;
@@ -9,10 +10,12 @@ namespace Server.Controllers;
 public class SkillsController : ControllerBase
 {
     private readonly SkillSnapContext _context;
+    private readonly IMemoryCache _cache;
 
-    public SkillsController(SkillSnapContext context)
+    public SkillsController(SkillSnapContext context, IMemoryCache cache)
     {
         _context = context;
+        _cache = cache;
     }
 
     // GET: api/Skills
@@ -21,10 +24,25 @@ public class SkillsController : ControllerBase
     {
         try
         {
+            const string cacheKey = "all_skills";
+            
+            if (_cache.TryGetValue(cacheKey, out List<Skill>? cachedSkills))
+            {
+                return Ok(cachedSkills);
+            }
+
             var skills = await _context.Skills
                 .Include(s => s.PortfolioUser)
                 .ToListAsync();
 
+            var cacheOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30),
+                Priority = CacheItemPriority.Normal,
+                SlidingExpiration = TimeSpan.FromMinutes(10)
+            };
+
+            _cache.Set(cacheKey, skills, cacheOptions);
             return Ok(skills);
         }
         catch (Exception ex)
@@ -99,6 +117,13 @@ public class SkillsController : ControllerBase
     {
         try
         {
+            string cacheKey = $"skills_user_{portfolioUserId}";
+            
+            if (_cache.TryGetValue(cacheKey, out List<Skill>? cachedSkills))
+            {
+                return Ok(cachedSkills);
+            }
+
             var portfolioUser = await _context.PortfolioUsers.FindAsync(portfolioUserId);
             if (portfolioUser == null)
             {
@@ -110,6 +135,14 @@ public class SkillsController : ControllerBase
                 .Include(s => s.PortfolioUser)
                 .ToListAsync();
 
+            var cacheOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30),
+                Priority = CacheItemPriority.Normal,
+                SlidingExpiration = TimeSpan.FromMinutes(10)
+            };
+
+            _cache.Set(cacheKey, skills, cacheOptions);
             return Ok(skills);
         }
         catch (Exception ex)
@@ -191,6 +224,9 @@ public class SkillsController : ControllerBase
             _context.Skills.Add(skill);
             await _context.SaveChangesAsync();
 
+            // Invalidate caches for this user
+            InvalidateUserCaches(skill.PortfolioUserId);
+
             // Return the skill with the portfolio user included
             var createdSkill = await _context.Skills
                 .Include(s => s.PortfolioUser)
@@ -267,6 +303,9 @@ public class SkillsController : ControllerBase
                 return BadRequest(new { message = $"The user already has another skill with the name '{skill.Name}'." });
             }
 
+            // Store the original user ID for cache invalidation
+            var originalUserId = existingSkill.PortfolioUserId;
+
             // Update properties
             existingSkill.Name = skill.Name;
             existingSkill.Level = skill.Level;
@@ -277,6 +316,13 @@ public class SkillsController : ControllerBase
             try
             {
                 await _context.SaveChangesAsync();
+                
+                // Invalidate caches for both original and new user (in case user changed)
+                InvalidateUserCaches(originalUserId);
+                if (originalUserId != skill.PortfolioUserId)
+                {
+                    InvalidateUserCaches(skill.PortfolioUserId);
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -310,8 +356,12 @@ public class SkillsController : ControllerBase
                 return NotFound(new { message = $"Skill with ID {id} not found." });
             }
 
+            var userId = skill.PortfolioUserId;
             _context.Skills.Remove(skill);
             await _context.SaveChangesAsync();
+
+            // Invalidate caches for this user
+            InvalidateUserCaches(userId);
 
             return NoContent();
         }
@@ -327,6 +377,13 @@ public class SkillsController : ControllerBase
     {
         try
         {
+            const string cacheKey = "skills_statistics";
+            
+            if (_cache.TryGetValue(cacheKey, out object? cachedStats))
+            {
+                return Ok(cachedStats);
+            }
+
             var totalSkills = await _context.Skills.CountAsync();
             
             var skillsByLevel = await _context.Skills
@@ -349,7 +406,7 @@ public class SkillsController : ControllerBase
 
             var averageSkillsPerUser = skillsByUser.Any() ? skillsByUser.Average(x => x.Count) : 0;
 
-            return Ok(new
+            var statistics = new
             {
                 TotalSkills = totalSkills,
                 TotalUsers = skillsByUser.Count,
@@ -357,7 +414,17 @@ public class SkillsController : ControllerBase
                 SkillsByLevel = skillsByLevel,
                 MostPopularSkills = mostPopularSkills,
                 SkillsByUser = skillsByUser
-            });
+            };
+
+            // Cache statistics for 15 minutes (shorter than detailed data)
+            var cacheOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15),
+                Priority = CacheItemPriority.Normal
+            };
+
+            _cache.Set(cacheKey, statistics, cacheOptions);
+            return Ok(statistics);
         }
         catch (Exception ex)
         {
@@ -376,5 +443,12 @@ public class SkillsController : ControllerBase
     private bool SkillExists(int id)
     {
         return _context.Skills.Any(e => e.Id == id);
+    }
+
+    private void InvalidateUserCaches(int userId)
+    {
+        _cache.Remove($"skills_user_{userId}");
+        _cache.Remove("all_skills");
+        _cache.Remove("skills_statistics");
     }
 }
