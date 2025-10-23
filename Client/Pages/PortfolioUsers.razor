@@ -19,7 +19,7 @@
                     <p class="text-gray-600 mt-1">Discover amazing developers and their incredible work</p>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                    <button @onclick="OpenAddPortfolioModal" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
                         <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
@@ -66,67 +66,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach (var user in PortfolioUserViewModel.PortfolioUsers)
                 {
-                    <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-                        <!-- User Profile Card -->
-                        <div class="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 p-6">
-                            <div class="text-center">
-                                <!-- Profile Image -->
-                                <div class="relative inline-block mb-4">
-                                    <img src="@(string.IsNullOrEmpty(user.ProfileImageUrl) ? "https://via.placeholder.com/120x120/6366f1/ffffff?text=👤" : user.ProfileImageUrl)" 
-                                         alt="@user.Name's profile picture" 
-                                         class="w-24 h-24 rounded-full border-4 border-white shadow-2xl object-cover" />
-                                    <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
-                                        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                                
-                                <!-- User Info -->
-                                <h2 class="text-2xl font-bold text-white mb-2">@user.Name</h2>
-                                <p class="text-blue-100 text-sm leading-relaxed mb-4">@user.Bio</p>
-                                
-                                <!-- Stats -->
-                                <div class="flex justify-center space-x-6 mb-6">
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold text-white">@user.ProjectCount</div>
-                                        <div class="text-xs text-blue-100 uppercase tracking-wide">Projects</div>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold text-white">@user.SkillCount</div>
-                                        <div class="text-xs text-blue-100 uppercase tracking-wide">Skills</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Action Buttons -->
-                        <div class="p-6 space-y-3">
-                            <button @onclick="() => ViewFullSkills(user.Id)" 
-                                    class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 flex items-center justify-center">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                                </svg>
-                                View Full Skills (@user.SkillCount)
-                            </button>
-                            
-                            <button @onclick="() => ViewFullProjects(user.Id)" 
-                                    class="w-full bg-gradient-to-r from-green-500 to-blue-600 text-white px-4 py-3 rounded-lg font-medium hover:from-green-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 flex items-center justify-center">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                                </svg>
-                                View Full Projects (@user.ProjectCount)
-                            </button>
-                            
-                            <button @onclick="() => ContactDeveloper(user)" 
-                                    class="w-full border-2 border-gray-300 text-gray-700 px-4 py-3 rounded-lg font-medium hover:bg-gray-50 transition-all duration-200 flex items-center justify-center">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                </svg>
-                                Contact Developer
-                            </button>
-                        </div>
-                    </div>
+                    <ProfileCard 
+                        User="user"
+                        OnViewSkills="ViewFullSkills"
+                        OnViewProjects="ViewFullProjects"
+                        OnContact="ContactDeveloper" />
                 }
             </div>
         }
@@ -150,8 +94,8 @@
     </div>
     @if (showSkillsModal)
     {
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" @onclick="CloseSkillsModal">
+            <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" @onclick:stopPropagation="true">
                 <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <h3 class="text-2xl font-bold flex items-center">
@@ -176,35 +120,9 @@
                             <span class="ml-3 text-gray-600">Loading skills...</span>
                         </div>
                     }
-                    else if (SkillViewModel.Skills?.Any() == true)
-                    {
-                        <div class="space-y-4">
-                            @foreach (var skill in SkillViewModel.Skills)
-                            {
-                                <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors duration-200">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <h4 class="font-semibold text-gray-800 text-lg">@skill.Name</h4>
-                                        <span class="text-sm font-medium @GetLevelColor(skill.Level) px-3 py-1 rounded-full">
-                                            @skill.Level
-                                        </span>
-                                    </div>
-                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                        <div class="h-2.5 rounded-full transition-all duration-1000 ease-out @GetProgressBarColor(skill.Level)" 
-                                             style="width: @GetProgressPercentage(skill.Level)%"></div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    }
                     else
                     {
-                        <div class="text-center py-8 text-gray-500">
-                            <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                            </svg>
-                            <p class="text-lg font-medium">No skills found</p>
-                            <p class="text-sm">This user hasn't added any skills yet.</p>
-                        </div>
+                        <SkillTags Skills="SkillViewModel.Skills?.ToList()" />
                     }
                 </div>
             </div>
@@ -213,8 +131,8 @@
 
     @if (showProjectsModal)
     {
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div class="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" @onclick="CloseProjectsModal">
+            <div class="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden" @onclick:stopPropagation="true">
                 <div class="bg-gradient-to-r from-green-500 to-blue-600 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <h3 class="text-2xl font-bold flex items-center">
@@ -239,49 +157,56 @@
                             <span class="ml-3 text-gray-600">Loading projects...</span>
                         </div>
                     }
-                    else if (ProjectViewModel.Projects?.Any() == true)
-                    {
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            @foreach (var project in ProjectViewModel.Projects)
-                            {
-                                <div class="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
-                                    <div class="h-48 overflow-hidden">
-                                        <img src="@(string.IsNullOrEmpty(project.ImageUrl) ? "https://via.placeholder.com/400x300/6366f1/ffffff?text=Project" : project.ImageUrl)" 
-                                             alt="@project.Title" 
-                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                    </div>
-                                    <div class="p-4">
-                                        <h4 class="font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-200">
-                                            @project.Title
-                                        </h4>
-                                        <p class="text-gray-600 text-sm line-clamp-3">
-                                            @project.Description
-                                        </p>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    }
                     else
                     {
-                        <div class="text-center py-8 text-gray-500">
-                            <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                            </svg>
-                            <p class="text-lg font-medium">No projects found</p>
-                            <p class="text-sm">This user hasn't added any projects yet.</p>
-                        </div>
+                        <ProjectList Projects="ProjectViewModel.Projects?.ToList()" />
                     }
                 </div>
             </div>
         </div>
+    }
+
+    <!-- Add Portfolio Modal -->
+    @if (showAddPortfolioModal)
+    {
+        <AddPortfolioModal 
+            PendingProjects="pendingProjects"
+            PendingSkills="pendingSkills"
+            OnClose="CloseAddPortfolioModal"
+            OnSubmit="HandlePortfolioSubmit"
+            OnAddProject="OpenAddProjectModal"
+            OnAddSkill="OpenAddSkillModal" />
+    }
+
+    <!-- Add Project Modal -->
+    @if (showAddProjectModal)
+    {
+        <AddProjectModal 
+            OnClose="CloseAddProjectModal"
+            OnSubmit="HandleProjectSubmit" />
+    }
+
+    <!-- Add Skill Modal -->
+    @if (showAddSkillModal)
+    {
+        <AddSkillModal 
+            OnClose="CloseAddSkillModal"
+            OnSubmit="HandleSkillSubmit" />
     }
 </div>
 
 @code {
     private bool showSkillsModal = false;
     private bool showProjectsModal = false;
+    private bool showAddPortfolioModal = false;
+    private bool showAddProjectModal = false;
+    private bool showAddSkillModal = false;
     private int selectedUserId = 0;
+
+    // Portfolio creation form
+    private List<Project> pendingProjects = new();
+    private List<Skill> pendingSkills = new();
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -297,6 +222,136 @@
         Console.WriteLine($"PortfolioUsers Count: {PortfolioUserViewModel.PortfolioUsers?.Count() ?? 0}");
         Console.WriteLine($"PortfolioUsers IsNull: {PortfolioUserViewModel.PortfolioUsers == null}");
         Console.WriteLine($"=====================================");
+    }
+
+    // Modal control methods
+    private void OpenAddPortfolioModal()
+    {
+        showAddPortfolioModal = true;
+        StateHasChanged();
+    }
+
+    private void CloseAddPortfolioModal()
+    {
+        showAddPortfolioModal = false;
+        ResetPortfolioForm();
+        StateHasChanged();
+    }
+
+    private void OpenAddProjectModal()
+    {
+        showAddProjectModal = true;
+        StateHasChanged();
+    }
+
+    private void CloseAddProjectModal()
+    {
+        showAddProjectModal = false;
+        StateHasChanged();
+    }
+
+    private void OpenAddSkillModal()
+    {
+        showAddSkillModal = true;
+        StateHasChanged();
+    }
+
+    private void CloseAddSkillModal()
+    {
+        showAddSkillModal = false;
+        StateHasChanged();
+    }
+
+    private void ResetPortfolioForm()
+    {
+        pendingProjects.Clear();
+        pendingSkills.Clear();
+    }
+
+    private void HandleProjectSubmit((string title, string description, string imageUrl) formData)
+    {
+        if (!string.IsNullOrWhiteSpace(formData.title) && !string.IsNullOrWhiteSpace(formData.description))
+        {
+            var project = new Project
+            {
+                Title = formData.title,
+                Description = formData.description,
+                ImageUrl = string.IsNullOrWhiteSpace(formData.imageUrl) ? null : formData.imageUrl
+            };
+            
+            pendingProjects.Add(project);
+            CloseAddProjectModal();
+            StateHasChanged();
+        }
+    }
+
+    private void HandleSkillSubmit((string name, string level) formData)
+    {
+        if (!string.IsNullOrWhiteSpace(formData.name) && !string.IsNullOrWhiteSpace(formData.level))
+        {
+            var skill = new Skill
+            {
+                Name = formData.name,
+                Level = formData.level
+            };
+            
+            pendingSkills.Add(skill);
+            CloseAddSkillModal();
+            StateHasChanged();
+        }
+    }
+
+    private async Task HandlePortfolioSubmit((string name, string bio, string imageUrl) formData)
+    {
+        // Validate form
+        if (string.IsNullOrWhiteSpace(formData.name) || 
+            string.IsNullOrWhiteSpace(formData.bio) || 
+            formData.bio.Length < 20)
+        {
+            return; // Form validation will handle this
+        }
+
+        try
+        {
+            // Create portfolio user
+            var portfolioUser = new PortfolioUser
+            {
+                Name = formData.name,
+                Bio = formData.bio,
+                ProfileImageUrl = string.IsNullOrWhiteSpace(formData.imageUrl) ? null : formData.imageUrl
+            };
+
+            var createdUser = await PortfolioUserViewModel.CreatePortfolioUserAsync(portfolioUser);
+            
+            if (createdUser != null)
+            {
+                // Add projects
+                foreach (var project in pendingProjects)
+                {
+                    project.PortfolioUserId = createdUser.Id;
+                    await ProjectViewModel.CreateProjectAsync(project);
+                }
+
+                // Add skills
+                foreach (var skill in pendingSkills)
+                {
+                    skill.PortfolioUserId = createdUser.Id;
+                    await SkillViewModel.CreateSkillAsync(skill);
+                }
+
+                // Close modal and reset form
+                CloseAddPortfolioModal();
+                
+                // Refresh the portfolio list
+                await PortfolioUserViewModel.LoadPortfolioUsersAsync();
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error creating portfolio: {ex.Message}");
+            // You could add error handling here
+        }
     }
 
     private async Task ViewFullSkills(int userId)
@@ -344,6 +399,7 @@
         LogViewModelState();
         StateHasChanged();
     }
+
 
     private string GetLevelColor(string level)
     {

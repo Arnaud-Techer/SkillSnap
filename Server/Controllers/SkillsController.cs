@@ -89,12 +89,12 @@ public class SkillsController : ControllerBase
 
             if (!string.IsNullOrEmpty(name))
             {
-                query = query.Where(s => s.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
+                query = query.Where(s => s.Name.ToLower().Contains(name.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(level))
             {
-                query = query.Where(s => s.Level.Equals(level, StringComparison.OrdinalIgnoreCase));
+                query = query.Where(s => s.Level.ToLower() == level.ToLower());
             }
 
             if (portfolioUserId.HasValue)
@@ -158,7 +158,7 @@ public class SkillsController : ControllerBase
         try
         {
             var skills = await _context.Skills
-                .Where(s => s.Level.Equals(level, StringComparison.OrdinalIgnoreCase))
+                .Where(s => s.Level.ToLower() == level.ToLower())
                 .Include(s => s.PortfolioUser)
                 .ToListAsync();
 
@@ -213,7 +213,7 @@ public class SkillsController : ControllerBase
 
             // Check if the user already has this skill
             var existingSkill = await _context.Skills
-                .FirstOrDefaultAsync(s => s.Name.Equals(skill.Name, StringComparison.OrdinalIgnoreCase) 
+                .FirstOrDefaultAsync(s => s.Name.ToLower() == skill.Name.ToLower() 
                                         && s.PortfolioUserId == skill.PortfolioUserId);
             
             if (existingSkill != null)
@@ -294,7 +294,7 @@ public class SkillsController : ControllerBase
 
             // Check if another skill with the same name exists for this user (excluding current skill)
             var duplicateSkill = await _context.Skills
-                .FirstOrDefaultAsync(s => s.Name.Equals(skill.Name, StringComparison.OrdinalIgnoreCase) 
+                .FirstOrDefaultAsync(s => s.Name.ToLower() == skill.Name.ToLower() 
                                         && s.PortfolioUserId == skill.PortfolioUserId
                                         && s.Id != id);
             
