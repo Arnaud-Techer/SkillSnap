@@ -85,7 +85,7 @@ public class PortfolioUsersController : ControllerBase
 
             if (!string.IsNullOrEmpty(name))
             {
-                query = query.Where(p => p.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
+                query = query.Where(p => p.Name.ToLower().Contains(name.ToLower()));
             }
 
             var portfolioUsers = await query.ToListAsync();

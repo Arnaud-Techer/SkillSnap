@@ -8,6 +8,7 @@
 @inject SkillViewModel SkillViewModel
 @inject ProjectViewModel ProjectViewModel
 @inject StatisticsRefreshService StatisticsRefreshService
+@implements IDisposable
 
 <PageTitle>Portfolio - SkillSnap</PageTitle>
 
@@ -20,6 +21,44 @@
                     <h1 class="text-3xl font-bold text-gray-900">Portfolio Showcase</h1>
                     <p class="text-gray-600 mt-1">Discover amazing developers and their incredible work</p>
                 </div>
+                
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            @if (isSearching)
+                            {
+                                <svg class="animate-spin h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            }
+                        </div>
+                        <input type="text" 
+                               @bind="searchQuery" 
+                               @bind:event="oninput"
+                               @onkeydown="HandleSearchKeyDown"
+                               placeholder="Search portfolios by name..." 
+                               disabled="@isSearching"
+                               class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-50 disabled:cursor-not-allowed" />
+                        @if (!string.IsNullOrWhiteSpace(searchQuery))
+                        {
+                            <button @onclick="ClearSearch" 
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        }
+                    </div>
+                </div>
+                
                 <div class="flex items-center space-x-4">
                     <button @onclick="OpenAddPortfolioModal" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
                         <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,10 +108,32 @@
                 </button>
             </div>
         }
-        else if (PortfolioUserViewModel.PortfolioUsers != null && PortfolioUserViewModel.PortfolioUsers.Any())
+        else if (GetDisplayedPortfolios() != null && GetDisplayedPortfolios().Any())
         {
+            <!-- Search Results Header -->
+            @if (IsShowingSearchResults())
+            {
+                <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <span class="text-blue-800 font-medium">
+                                Search results for "<span class="font-semibold">@searchQuery</span>" 
+                                (@GetDisplayedPortfolios().Count() portfolio@(GetDisplayedPortfolios().Count() == 1 ? "" : "s"))
+                            </span>
+                        </div>
+                        <button @onclick="ClearSearch" 
+                                class="text-blue-600 hover:text-blue-800 font-medium text-sm">
+                            Clear search
+                        </button>
+                    </div>
+                </div>
+            }
+            
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @foreach (var user in PortfolioUserViewModel.PortfolioUsers)
+                @foreach (var user in GetDisplayedPortfolios())
                 {
                     <ProfileCard 
                         User="user"
@@ -84,20 +145,51 @@
         }
         else
         {
-            <div class="text-center py-16">
-                <div class="bg-gray-100 rounded-full w-32 h-32 flex items-center justify-center mx-auto mb-8">
-                    <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
+            @if (IsShowingSearchResults())
+            {
+                <!-- No Search Results -->
+                <div class="text-center py-16">
+                    <div class="w-24 h-24 mx-auto mb-6 bg-yellow-100 rounded-full flex items-center justify-center">
+                        <svg class="w-12 h-12 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">No portfolios found</h3>
+                    <p class="text-gray-500 mb-6">
+                        No portfolios match your search for "<span class="font-semibold">@searchQuery</span>". 
+                        Try a different search term or clear the search to see all portfolios.
+                    </p>
+                    <div class="flex items-center justify-center space-x-4">
+                        <button @onclick="ClearSearch" class="bg-gray-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-700 transition-all duration-200">
+                            Clear Search
+                        </button>
+                        <button @onclick="OpenAddPortfolioModal" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Add Portfolio
+                        </button>
+                    </div>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-700 mb-4">No portfolios found</h2>
-                <p class="text-gray-500 mb-8 max-w-md mx-auto">
-                    Be the first to showcase your amazing work! Create your portfolio and let others discover your incredible projects and skills.
-                </p>
-                <button class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
-                    Create Your Portfolio
-                </button>
-            </div>
+            }
+            else
+            {
+                <!-- No Portfolios at All -->
+                <div class="text-center py-16">
+                    <div class="bg-gray-100 rounded-full w-32 h-32 flex items-center justify-center mx-auto mb-8">
+                        <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-700 mb-4">No portfolios found</h2>
+                    <p class="text-gray-500 mb-8 max-w-md mx-auto">
+                        Be the first to showcase your amazing work! Create your portfolio and let others discover your incredible projects and skills.
+                    </p>
+                    <button @onclick="OpenAddPortfolioModal" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                        Create Your Portfolio
+                    </button>
+                </div>
+            }
         }
     </div>
     @if (showSkillsModal)
@@ -274,6 +366,14 @@
     private Skill? selectedSkillForEdit = null;
     private Project? selectedProjectForEdit = null;
 
+    // Search functionality
+    private string searchQuery = string.Empty;
+    private bool isSearching = false;
+    private IEnumerable<PortfolioUserSummary>? searchResults = null;
+    private System.Threading.Timer? searchTimer;
+    private string previousSearchQuery = string.Empty;
+
+
     // Portfolio creation form
     private List<Project> pendingProjects = new();
     private List<Skill> pendingSkills = new();
@@ -284,6 +384,18 @@
         await PortfolioUserViewModel.LoadPortfolioUsersAsync();
         LogViewModelState();
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Check if search query has changed and trigger debounced search
+        if (searchQuery != previousSearchQuery)
+        {
+            previousSearchQuery = searchQuery;
+            await HandleSearchQueryChange();
+        }
+    }
+
+
 
     private void LogViewModelState()
     {
@@ -832,5 +944,107 @@
         {
             Console.WriteLine($"Error deleting project: {ex.Message}");
         }
+    }
+
+
+    // Get the portfolios to display (search results or all portfolios)
+    private IEnumerable<PortfolioUserSummary> GetDisplayedPortfolios()
+    {
+        if (!string.IsNullOrWhiteSpace(searchQuery) && searchResults != null)
+        {
+            return searchResults;
+        }
+        return PortfolioUserViewModel.PortfolioUsers ?? Enumerable.Empty<PortfolioUserSummary>();
+    }
+
+    // Check if we're currently showing search results
+    private bool IsShowingSearchResults()
+    {
+        return !string.IsNullOrWhiteSpace(searchQuery) && searchResults != null;
+    }
+
+    // Search Methods
+    private async Task HandleSearchQueryChange()
+    {
+        // Clear existing timer
+        searchTimer?.Dispose();
+        
+        if (string.IsNullOrWhiteSpace(searchQuery))
+        {
+            await ClearSearch();
+            return;
+        }
+        
+        // Set up debounced search (500ms delay)
+        searchTimer = new System.Threading.Timer(async _ => 
+        {
+            await InvokeAsync(async () => 
+            {
+                await PerformSearch();
+            });
+        }, null, 500, System.Threading.Timeout.Infinite);
+    }
+
+    private async Task HandleSearchKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            // Cancel timer and search immediately
+            searchTimer?.Dispose();
+            await PerformSearch();
+        }
+    }
+
+    private async Task PerformSearch()
+    {
+        if (string.IsNullOrWhiteSpace(searchQuery))
+        {
+            await ClearSearch();
+            return;
+        }
+
+        isSearching = true;
+        try
+        {
+            // Set the SearchName property and use the existing search functionality
+            PortfolioUserViewModel.SearchName = searchQuery.Trim();
+            await PortfolioUserViewModel.SearchPortfolioUsersAsync();
+            searchResults = PortfolioUserViewModel.PortfolioUsers;
+            
+            Console.WriteLine($"Search performed for: '{searchQuery}' - Found {searchResults?.Count() ?? 0} results");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error performing search: {ex.Message}");
+            searchResults = Enumerable.Empty<PortfolioUserSummary>();
+        }
+        finally
+        {
+            isSearching = false;
+            StateHasChanged();
+        }
+    }
+
+    // Clear search method for the clear button
+    private async Task ClearSearch()
+    {
+        searchQuery = string.Empty;
+        searchResults = null;
+        isSearching = false;
+        previousSearchQuery = string.Empty;
+        
+        // Clear the SearchName property
+        PortfolioUserViewModel.SearchName = null;
+        
+        // Reload all portfolios
+        await PortfolioUserViewModel.LoadPortfolioUsersAsync();
+        StateHasChanged();
+        
+        Console.WriteLine("Search cleared - showing all portfolios");
+    }
+
+    public void Dispose()
+    {
+        searchTimer?.Dispose();
     }
 }

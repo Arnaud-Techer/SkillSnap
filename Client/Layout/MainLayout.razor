@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@using Client.Components
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
     <div class="flex">
         <!-- Sidebar -->
@@ -31,17 +32,6 @@
                         </div>
                         
                         <div class="flex items-center space-x-6">
-                            <!-- Search Bar -->
-                            <div class="relative hidden md:block">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                    </svg>
-                                </div>
-                                <input type="text" placeholder="Search portfolios..." 
-                                       class="bg-white/50 border border-white/30 rounded-xl pl-10 pr-4 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all duration-200">
-                            </div>
-                            
                             <!-- User Menu -->
                             <div class="flex items-center space-x-3">
                                 <button class="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200">

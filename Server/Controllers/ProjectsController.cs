@@ -88,7 +88,7 @@ public class ProjectsController : ControllerBase
 
             if (!string.IsNullOrEmpty(title))
             {
-                query = query.Where(p => p.Title.Contains(title, StringComparison.OrdinalIgnoreCase));
+                query = query.Where(p => p.Title.ToLower().Contains(title.ToLower()));
             }
 
             if (portfolioUserId.HasValue)
