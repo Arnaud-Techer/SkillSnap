@@ -130,7 +130,10 @@
                     }
                     else
                     {
-                        <SkillTags Skills="SkillViewModel.Skills?.ToList()" OnAddSkill="OpenAddSkillToExistingModal" />
+                        <SkillTags Skills="SkillViewModel.Skills?.ToList()" 
+                                   OnAddSkill="OpenAddSkillToExistingModal"
+                                   OnEditSkill="OpenEditSkillModal"
+                                   OnDeleteSkill="HandleDeleteSkill" />
                     }
                 </div>
             </div>
@@ -167,7 +170,10 @@
                     }
                     else
                     {
-                        <ProjectList Projects="ProjectViewModel.Projects?.ToList()" OnAddProject="OpenAddProjectToExistingModal" />
+                        <ProjectList Projects="ProjectViewModel.Projects?.ToList()" 
+                                     OnAddProject="OpenAddProjectToExistingModal"
+                                     OnEditProject="OpenEditProjectModal"
+                                     OnDeleteProject="HandleDeleteProject" />
                     }
                 </div>
             </div>
@@ -227,6 +233,26 @@
             OnClose="CloseAddSkillToExistingModal"
             OnSubmit="HandleAddSkillToExisting" />
     }
+
+    <!-- Edit Skill Modal -->
+    @if (showEditSkillModal)
+    {
+        <EditSkillModal 
+            ShowModal="showEditSkillModal"
+            SkillToEdit="selectedSkillForEdit"
+            OnClose="CloseEditSkillModal"
+            OnSubmit="HandleEditSkill" />
+    }
+
+    <!-- Edit Project Modal -->
+    @if (showEditProjectModal)
+    {
+        <EditProjectModal 
+            ShowModal="showEditProjectModal"
+            ProjectToEdit="selectedProjectForEdit"
+            OnClose="CloseEditProjectModal"
+            OnSubmit="HandleEditProject" />
+    }
 </div>
 
 @code {
@@ -238,9 +264,15 @@
     private bool showAddSkillModal = false;
     private bool showAddProjectToExistingModal = false;
     private bool showAddSkillToExistingModal = false;
+    private bool showEditSkillModal = false;
+    private bool showEditProjectModal = false;
     private int selectedUserId = 0;
     private bool isAddingProject = false;
     private bool isAddingSkill = false;
+    
+    // Selected items for editing
+    private Skill? selectedSkillForEdit = null;
+    private Project? selectedProjectForEdit = null;
 
     // Portfolio creation form
     private List<Project> pendingProjects = new();
@@ -643,6 +675,162 @@
         {
             Console.WriteLine($"Error deleting portfolio: {ex.Message}");
             // You could add error handling here, like showing a toast notification
+        }
+    }
+
+    // Edit Skill Modal Methods
+    private void OpenEditSkillModal(Skill skill)
+    {
+        selectedSkillForEdit = skill;
+        showEditSkillModal = true;
+        StateHasChanged();
+    }
+
+    private void CloseEditSkillModal()
+    {
+        selectedSkillForEdit = null;
+        showEditSkillModal = false;
+        StateHasChanged();
+    }
+
+    private async Task HandleEditSkill(Skill updatedSkill)
+    {
+        try
+        {
+            var success = await SkillViewModel.UpdateSkillAsync(updatedSkill.Id, updatedSkill);
+            
+            if (success)
+            {
+                CloseEditSkillModal();
+                
+                // Refresh the skills for this user
+                await SkillViewModel.LoadSkillsByUserAsync(selectedUserId);
+                
+                // Refresh the main portfolio list to update counters
+                await PortfolioUserViewModel.LoadPortfolioUsersAsync();
+                
+                // Refresh navigation statistics
+                StatisticsRefreshService.NotifyStatisticsChanged();
+                
+                Console.WriteLine($"Successfully updated skill: {updatedSkill.Name}");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to update skill: {updatedSkill.Name}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error updating skill: {ex.Message}");
+        }
+    }
+
+    // Edit Project Modal Methods
+    private void OpenEditProjectModal(Project project)
+    {
+        selectedProjectForEdit = project;
+        showEditProjectModal = true;
+        StateHasChanged();
+    }
+
+    private void CloseEditProjectModal()
+    {
+        selectedProjectForEdit = null;
+        showEditProjectModal = false;
+        StateHasChanged();
+    }
+
+    private async Task HandleEditProject(Project updatedProject)
+    {
+        try
+        {
+            var success = await ProjectViewModel.UpdateProjectAsync(updatedProject.Id, updatedProject);
+            
+            if (success)
+            {
+                CloseEditProjectModal();
+                
+                // Refresh the projects for this user
+                await ProjectViewModel.LoadProjectsByUserAsync(selectedUserId);
+                
+                // Refresh the main portfolio list to update counters
+                await PortfolioUserViewModel.LoadPortfolioUsersAsync();
+                
+                // Refresh navigation statistics
+                StatisticsRefreshService.NotifyStatisticsChanged();
+                
+                Console.WriteLine($"Successfully updated project: {updatedProject.Title}");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to update project: {updatedProject.Title}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error updating project: {ex.Message}");
+        }
+    }
+
+    // Delete Skill Method
+    private async Task HandleDeleteSkill(Skill skill)
+    {
+        try
+        {
+            var success = await SkillViewModel.DeleteSkillAsync(skill.Id);
+            
+            if (success)
+            {
+                // Refresh the skills for this user
+                await SkillViewModel.LoadSkillsByUserAsync(selectedUserId);
+                
+                // Refresh the main portfolio list to update counters
+                await PortfolioUserViewModel.LoadPortfolioUsersAsync();
+                
+                // Refresh navigation statistics
+                StatisticsRefreshService.NotifyStatisticsChanged();
+                
+                Console.WriteLine($"Successfully deleted skill: {skill.Name}");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to delete skill: {skill.Name}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting skill: {ex.Message}");
+        }
+    }
+
+    // Delete Project Method
+    private async Task HandleDeleteProject(Project project)
+    {
+        try
+        {
+            var success = await ProjectViewModel.DeleteProjectAsync(project.Id);
+            
+            if (success)
+            {
+                // Refresh the projects for this user
+                await ProjectViewModel.LoadProjectsByUserAsync(selectedUserId);
+                
+                // Refresh the main portfolio list to update counters
+                await PortfolioUserViewModel.LoadPortfolioUsersAsync();
+                
+                // Refresh navigation statistics
+                StatisticsRefreshService.NotifyStatisticsChanged();
+                
+                Console.WriteLine($"Successfully deleted project: {project.Title}");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to delete project: {project.Title}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting project: {ex.Message}");
         }
     }
 }
