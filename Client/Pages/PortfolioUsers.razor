@@ -8,6 +8,8 @@
 @inject SkillViewModel SkillViewModel
 @inject ProjectViewModel ProjectViewModel
 @inject StatisticsRefreshService StatisticsRefreshService
+@inject AuthViewModel AuthViewModel
+@inject IJSRuntime JSRuntime
 @implements IDisposable
 
 <PageTitle>Portfolio - SkillSnap</PageTitle>
@@ -60,18 +62,30 @@
                 </div>
                 
                 <div class="flex items-center space-x-4">
-                    <button @onclick="OpenAddPortfolioModal" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
-                        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                        Add Portfolio
-                    </button>
-                    <button @onclick="OpenDeletePortfolioModal" class="bg-gradient-to-r from-red-500 to-pink-600 text-white px-6 py-2 rounded-lg font-medium hover:from-red-600 hover:to-pink-700 transition-all duration-200 transform hover:scale-105">
-                        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                        </svg>
-                        Delete Portfolio
-                    </button>
+                    @if (AuthViewModel.IsAuthenticated)
+                    {
+                        <button @onclick="OpenAddPortfolioModal" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Add Portfolio
+                        </button>
+                        <button @onclick="OpenDeletePortfolioModal" class="bg-gradient-to-r from-red-500 to-pink-600 text-white px-6 py-2 rounded-lg font-medium hover:from-red-600 hover:to-pink-700 transition-all duration-200 transform hover:scale-105">
+                            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            Delete Portfolio
+                        </button>
+                    }
+                    else
+                    {
+                        <button @onclick="ShowAuthRequiredMessage" class="bg-gradient-to-r from-gray-400 to-gray-500 text-white px-6 py-2 rounded-lg font-medium cursor-not-allowed opacity-75">
+                            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                            Sign In Required
+                        </button>
+                    }
                 </div>
             </div>
         </div>
@@ -163,12 +177,24 @@
                         <button @onclick="ClearSearch" class="bg-gray-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-700 transition-all duration-200">
                             Clear Search
                         </button>
-                        <button @onclick="OpenAddPortfolioModal" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
-                            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                            Add Portfolio
-                        </button>
+                        @if (AuthViewModel.IsAuthenticated)
+                        {
+                            <button @onclick="OpenAddPortfolioModal" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                Add Portfolio
+                            </button>
+                        }
+                        else
+                        {
+                            <button @onclick="ShowAuthRequiredMessage" class="bg-gradient-to-r from-gray-400 to-gray-500 text-white px-6 py-3 rounded-lg font-medium cursor-not-allowed opacity-75">
+                                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                </svg>
+                                Sign In Required
+                            </button>
+                        }
                     </div>
                 </div>
             }
@@ -185,9 +211,21 @@
                     <p class="text-gray-500 mb-8 max-w-md mx-auto">
                         Be the first to showcase your amazing work! Create your portfolio and let others discover your incredible projects and skills.
                     </p>
-                    <button @onclick="OpenAddPortfolioModal" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
-                        Create Your Portfolio
-                    </button>
+                    @if (AuthViewModel.IsAuthenticated)
+                    {
+                        <button @onclick="OpenAddPortfolioModal" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                            Create Your Portfolio
+                        </button>
+                    }
+                    else
+                    {
+                        <button @onclick="ShowAuthRequiredMessage" class="bg-gradient-to-r from-gray-400 to-gray-500 text-white px-8 py-4 rounded-lg font-semibold cursor-not-allowed opacity-75">
+                            <svg class="w-6 h-6 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                            Sign In to Create Portfolio
+                        </button>
+                    }
                 </div>
             }
         }
@@ -381,6 +419,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await AuthViewModel.CheckAuthenticationStatusAsync();
         await PortfolioUserViewModel.LoadPortfolioUsersAsync();
         LogViewModelState();
     }
@@ -1041,6 +1080,17 @@
         StateHasChanged();
         
         Console.WriteLine("Search cleared - showing all portfolios");
+    }
+
+    private async Task ShowAuthRequiredMessage()
+    {
+        await JSRuntime.InvokeVoidAsync("alert", 
+            "Please sign in to create or manage portfolios.\n\n" +
+            "You need to be logged in to:\n" +
+            "• Create new portfolios\n" +
+            "• Delete existing portfolios\n" +
+            "• Add projects and skills\n\n" +
+            "Click 'Sign In' in the navigation menu to get started!");
     }
 
     public void Dispose()

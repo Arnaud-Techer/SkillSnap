@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @using Client.Components
+@using Client.ViewModels
+@inject AuthViewModel AuthViewModel
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
     <div class="flex">
         <!-- Sidebar -->
@@ -33,21 +35,13 @@
                         
                         <div class="flex items-center space-x-6">
                             <!-- User Menu -->
-                            <div class="flex items-center space-x-3">
-                                <button class="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h6v-1a6 6 0 00-6-6H4v7z"></path>
-                                    </svg>
-                                </button>
-                                
-                                <button class="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h6v-1a6 6 0 00-6-6H4v7z"></path>
-                                    </svg>
-                                </button>
-                                
+                            <div class="flex items-center space-x-3">    
                                 <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-                                    <span class="text-white text-sm font-semibold">U</span>
+                                    <span class="text-white text-sm font-semibold">
+                                        @(AuthViewModel.IsAuthenticated && !string.IsNullOrEmpty(AuthViewModel.CurrentUserEmail) 
+                                            ? AuthViewModel.CurrentUserEmail.Substring(0, 1).ToUpper() 
+                                            : "U")
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -62,3 +56,10 @@
         </div>
     </div>
 </div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthViewModel.CheckAuthenticationStatusAsync();
+    }
+}
