@@ -150,11 +150,23 @@
     private string localPortfolioBio = string.Empty;
     private string localPortfolioImageUrl = string.Empty;
 
+    private bool isSubmitting = false;
+
     private async Task HandleSubmit()
     {
-        if (OnSubmit.HasDelegate)
+        if (isSubmitting || !OnSubmit.HasDelegate)
+        {
+            return;
+        }
+
+        isSubmitting = true;
+        try
         {
             await OnSubmit.InvokeAsync((localPortfolioName, localPortfolioBio, localPortfolioImageUrl));
+        }
+        finally
+        {
+            isSubmitting = false;
         }
     }
 

@@ -91,9 +91,16 @@
             <p class="text-gray-500 mb-6 max-w-md mx-auto">
                 Projects will appear here once they're added to your portfolio. Showcase your work and let others see what you can create!
             </p>
-            <button class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
-                Add Your First Project
-            </button>
+            @if (OnAddProject.HasDelegate)
+            {
+                <button @onclick="OnAddProject" 
+                        class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                    <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Add Your First Project
+                </button>
+            }
         </div>
     }
 </div>
@@ -101,4 +108,7 @@
 @code {
     [Parameter]
     public List<Project>? Projects { get; set; }
+    
+    [Parameter]
+    public EventCallback OnAddProject { get; set; }
 }

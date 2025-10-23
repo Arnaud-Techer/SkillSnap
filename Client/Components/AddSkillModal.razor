@@ -68,11 +68,23 @@
     private string localSkillName = string.Empty;
     private string localSkillLevel = string.Empty;
 
+    private bool isSubmitting = false;
+
     private async Task HandleSubmit()
     {
-        if (OnSubmit.HasDelegate)
+        if (isSubmitting || !OnSubmit.HasDelegate)
+        {
+            return;
+        }
+
+        isSubmitting = true;
+        try
         {
             await OnSubmit.InvokeAsync((localSkillName, localSkillLevel));
+        }
+        finally
+        {
+            isSubmitting = false;
         }
     }
 }

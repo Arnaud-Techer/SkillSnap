@@ -122,7 +122,7 @@
                     }
                     else
                     {
-                        <SkillTags Skills="SkillViewModel.Skills?.ToList()" />
+                        <SkillTags Skills="SkillViewModel.Skills?.ToList()" OnAddSkill="OpenAddSkillToExistingModal" />
                     }
                 </div>
             </div>
@@ -159,7 +159,7 @@
                     }
                     else
                     {
-                        <ProjectList Projects="ProjectViewModel.Projects?.ToList()" />
+                        <ProjectList Projects="ProjectViewModel.Projects?.ToList()" OnAddProject="OpenAddProjectToExistingModal" />
                     }
                 </div>
             </div>
@@ -193,6 +193,22 @@
             OnClose="CloseAddSkillModal"
             OnSubmit="HandleSkillSubmit" />
     }
+
+    <!-- Add Project to Existing Portfolio Modal -->
+    @if (showAddProjectToExistingModal)
+    {
+        <AddProjectModal 
+            OnClose="CloseAddProjectToExistingModal"
+            OnSubmit="HandleAddProjectToExisting" />
+    }
+
+    <!-- Add Skill to Existing Portfolio Modal -->
+    @if (showAddSkillToExistingModal)
+    {
+        <AddSkillModal 
+            OnClose="CloseAddSkillToExistingModal"
+            OnSubmit="HandleAddSkillToExisting" />
+    }
 </div>
 
 @code {
@@ -201,7 +217,11 @@
     private bool showAddPortfolioModal = false;
     private bool showAddProjectModal = false;
     private bool showAddSkillModal = false;
+    private bool showAddProjectToExistingModal = false;
+    private bool showAddSkillToExistingModal = false;
     private int selectedUserId = 0;
+    private bool isAddingProject = false;
+    private bool isAddingSkill = false;
 
     // Portfolio creation form
     private List<Project> pendingProjects = new();
@@ -262,6 +282,31 @@
         StateHasChanged();
     }
 
+    // Modal control methods for existing portfolios
+    private void OpenAddProjectToExistingModal()
+    {
+        showAddProjectToExistingModal = true;
+        StateHasChanged();
+    }
+
+    private void CloseAddProjectToExistingModal()
+    {
+        showAddProjectToExistingModal = false;
+        StateHasChanged();
+    }
+
+    private void OpenAddSkillToExistingModal()
+    {
+        showAddSkillToExistingModal = true;
+        StateHasChanged();
+    }
+
+    private void CloseAddSkillToExistingModal()
+    {
+        showAddSkillToExistingModal = false;
+        StateHasChanged();
+    }
+
     private void ResetPortfolioForm()
     {
         pendingProjects.Clear();
@@ -298,6 +343,90 @@
             pendingSkills.Add(skill);
             CloseAddSkillModal();
             StateHasChanged();
+        }
+    }
+
+    // Handlers for adding to existing portfolios
+    private async Task HandleAddProjectToExisting((string title, string description, string imageUrl) formData)
+    {
+        // Prevent multiple simultaneous submissions
+        if (isAddingProject || string.IsNullOrWhiteSpace(formData.title) || string.IsNullOrWhiteSpace(formData.description) || selectedUserId <= 0)
+        {
+            return;
+        }
+
+        isAddingProject = true;
+        
+        try
+        {
+            var project = new Project
+            {
+                Title = formData.title,
+                Description = formData.description,
+                ImageUrl = string.IsNullOrWhiteSpace(formData.imageUrl) ? null : formData.imageUrl,
+                PortfolioUserId = selectedUserId
+            };
+
+            await ProjectViewModel.CreateProjectAsync(project);
+            
+            // Close modal first to prevent re-rendering issues
+            CloseAddProjectToExistingModal();
+            
+            // Refresh the projects for this user
+            await ProjectViewModel.LoadProjectsByUserAsync(selectedUserId);
+            
+            // Refresh the main portfolio list to update counters
+            Console.WriteLine($"Refreshing portfolio list after adding project to user {selectedUserId}");
+            await PortfolioUserViewModel.LoadPortfolioUsersAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding project to existing portfolio: {ex.Message}");
+        }
+        finally
+        {
+            isAddingProject = false;
+        }
+    }
+
+    private async Task HandleAddSkillToExisting((string name, string level) formData)
+    {
+        // Prevent multiple simultaneous submissions
+        if (isAddingSkill || string.IsNullOrWhiteSpace(formData.name) || string.IsNullOrWhiteSpace(formData.level) || selectedUserId <= 0)
+        {
+            return;
+        }
+
+        isAddingSkill = true;
+        
+        try
+        {
+            var skill = new Skill
+            {
+                Name = formData.name,
+                Level = formData.level,
+                PortfolioUserId = selectedUserId
+            };
+
+            await SkillViewModel.CreateSkillAsync(skill);
+            
+            // Close modal first to prevent re-rendering issues
+            CloseAddSkillToExistingModal();
+            
+            // Refresh the skills for this user
+            await SkillViewModel.LoadSkillsByUserAsync(selectedUserId);
+            
+            // Refresh the main portfolio list to update counters
+            Console.WriteLine($"Refreshing portfolio list after adding skill to user {selectedUserId}");
+            await PortfolioUserViewModel.LoadPortfolioUsersAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding skill to existing portfolio: {ex.Message}");
+        }
+        finally
+        {
+            isAddingSkill = false;
         }
     }
 

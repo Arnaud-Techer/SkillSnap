@@ -70,11 +70,23 @@
     private string localProjectDescription = string.Empty;
     private string localProjectImageUrl = string.Empty;
 
+    private bool isSubmitting = false;
+
     private async Task HandleSubmit()
     {
-        if (OnSubmit.HasDelegate)
+        if (isSubmitting || !OnSubmit.HasDelegate)
+        {
+            return;
+        }
+
+        isSubmitting = true;
+        try
         {
             await OnSubmit.InvokeAsync((localProjectTitle, localProjectDescription, localProjectImageUrl));
+        }
+        finally
+        {
+            isSubmitting = false;
         }
     }
 }
