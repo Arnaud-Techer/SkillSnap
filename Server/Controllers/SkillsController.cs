@@ -385,6 +385,7 @@ public class SkillsController : ControllerBase
             }
 
             var totalSkills = await _context.Skills.CountAsync();
+            var totalPortfolioUsers = await _context.PortfolioUsers.CountAsync();
             
             var skillsByLevel = await _context.Skills
                 .GroupBy(s => s.Level)
@@ -409,7 +410,7 @@ public class SkillsController : ControllerBase
             var statistics = new
             {
                 TotalSkills = totalSkills,
-                TotalUsers = skillsByUser.Count,
+                TotalUsers = totalPortfolioUsers, // Use actual portfolio user count
                 AverageSkillsPerUser = Math.Round(averageSkillsPerUser, 2),
                 SkillsByLevel = skillsByLevel,
                 MostPopularSkills = mostPopularSkills,

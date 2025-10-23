@@ -3,9 +3,11 @@
 @using Client.Components
 @using Client.Models
 @using Client.ViewModels
+@using Client.Services
 @inject PortfolioUserViewModel PortfolioUserViewModel
 @inject SkillViewModel SkillViewModel
 @inject ProjectViewModel ProjectViewModel
+@inject StatisticsRefreshService StatisticsRefreshService
 
 <PageTitle>Portfolio - SkillSnap</PageTitle>
 
@@ -378,6 +380,9 @@
             // Refresh the main portfolio list to update counters
             Console.WriteLine($"Refreshing portfolio list after adding project to user {selectedUserId}");
             await PortfolioUserViewModel.LoadPortfolioUsersAsync();
+            
+            // Refresh navigation statistics
+            StatisticsRefreshService.NotifyStatisticsChanged();
         }
         catch (Exception ex)
         {
@@ -419,6 +424,9 @@
             // Refresh the main portfolio list to update counters
             Console.WriteLine($"Refreshing portfolio list after adding skill to user {selectedUserId}");
             await PortfolioUserViewModel.LoadPortfolioUsersAsync();
+            
+            // Refresh navigation statistics
+            StatisticsRefreshService.NotifyStatisticsChanged();
         }
         catch (Exception ex)
         {
@@ -473,6 +481,10 @@
                 
                 // Refresh the portfolio list
                 await PortfolioUserViewModel.LoadPortfolioUsersAsync();
+                
+                // Refresh navigation statistics
+                StatisticsRefreshService.NotifyStatisticsChanged();
+                
                 StateHasChanged();
             }
         }

@@ -17,20 +17,49 @@
         
         <!-- Quick Stats -->
         <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 border border-blue-100">
-            <div class="flex items-center justify-between">
-                <div class="text-center">
-                    <div class="text-lg font-bold text-blue-600">24</div>
-                    <div class="text-xs text-gray-600">Portfolios</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-lg font-bold text-purple-600">156</div>
-                    <div class="text-xs text-gray-600">Projects</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-lg font-bold text-pink-600">89</div>
-                    <div class="text-xs text-gray-600">Skills</div>
-                </div>
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-gray-700">Platform Stats</h3>
+                <button @onclick="LoadStatistics" 
+                        class="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-100 rounded-lg transition-all duration-200"
+                        title="Refresh statistics">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                </button>
             </div>
+            @if (isLoadingStats)
+            {
+                <div class="flex items-center justify-center py-4">
+                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                    <span class="ml-2 text-sm text-gray-600">Loading stats...</span>
+                </div>
+            }
+            else if (statistics != null)
+            {
+                <div class="flex items-center justify-between">
+                    <div class="text-center">
+                        <div class="text-lg font-bold text-blue-600">@statistics.TotalPortfolios</div>
+                        <div class="text-xs text-gray-600">Portfolios</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-lg font-bold text-purple-600">@statistics.TotalProjects</div>
+                        <div class="text-xs text-gray-600">Projects</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-lg font-bold text-pink-600">@statistics.TotalSkills</div>
+                        <div class="text-xs text-gray-600">Skills</div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="flex items-center justify-center py-4">
+                    <div class="text-center">
+                        <div class="text-lg font-bold text-gray-400">--</div>
+                        <div class="text-xs text-gray-500">Unable to load stats</div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 
@@ -124,8 +153,16 @@
     </div>
 </div>
 
+@using Client.Services
+@inject StatisticsService StatisticsService
+@inject StatisticsRefreshService StatisticsRefreshService
+
+@implements IDisposable
+
 @code {
     private bool collapseNavMenu = true;
+    private bool isLoadingStats = true;
+    private StatisticsData? statistics;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
@@ -133,4 +170,43 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadStatistics();
+        
+        // Subscribe to statistics refresh events
+        StatisticsRefreshService.OnStatisticsChanged += OnStatisticsChanged;
+    }
+
+    private async void OnStatisticsChanged()
+    {
+        await LoadStatistics();
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe from events to prevent memory leaks
+        StatisticsRefreshService.OnStatisticsChanged -= OnStatisticsChanged;
+    }
+
+    private async Task LoadStatistics()
+    {
+        try
+        {
+            isLoadingStats = true;
+            statistics = await StatisticsService.GetStatisticsAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading statistics: {ex.Message}");
+            statistics = null;
+        }
+        finally
+        {
+            isLoadingStats = false;
+            StateHasChanged();
+        }
+    }
+
 }

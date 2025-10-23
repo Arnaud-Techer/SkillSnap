@@ -326,6 +326,7 @@ public class ProjectsController : ControllerBase
             }
 
             var totalProjects = await _context.Projects.CountAsync();
+            var totalPortfolioUsers = await _context.PortfolioUsers.CountAsync();
             var projectsByUser = await _context.Projects
                 .GroupBy(p => p.PortfolioUserId)
                 .Select(g => new { PortfolioUserId = g.Key, Count = g.Count() })
@@ -336,7 +337,7 @@ public class ProjectsController : ControllerBase
             var statistics = new
             {
                 TotalProjects = totalProjects,
-                TotalUsers = projectsByUser.Count,
+                TotalUsers = totalPortfolioUsers, // Use actual portfolio user count
                 AverageProjectsPerUser = Math.Round(averageProjectsPerUser, 2),
                 ProjectsByUser = projectsByUser
             };

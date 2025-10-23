@@ -293,6 +293,31 @@ public class PortfolioUsersController : ControllerBase
         }
     }
 
+    // GET: api/PortfolioUsers/statistics
+    [HttpGet("statistics")]
+    public async Task<ActionResult<object>> GetPortfolioStatistics()
+    {
+        try
+        {
+            var totalPortfolioUsers = await _context.PortfolioUsers.CountAsync();
+            var totalProjects = await _context.Projects.CountAsync();
+            var totalSkills = await _context.Skills.CountAsync();
+
+            var statistics = new
+            {
+                TotalPortfolioUsers = totalPortfolioUsers,
+                TotalProjects = totalProjects,
+                TotalSkills = totalSkills
+            };
+
+            return Ok(statistics);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "An error occurred while retrieving portfolio statistics.", error = ex.Message });
+        }
+    }
+
     private bool PortfolioUserExists(int id)
     {
         return _context.PortfolioUsers.Any(e => e.Id == id);
