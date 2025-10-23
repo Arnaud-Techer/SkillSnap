@@ -1,0 +1,120 @@
+@page "/register"
+@using Client.ViewModels
+@using Client.Services
+@inject AuthViewModel AuthViewModel
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Register - SkillSnap</PageTitle>
+
+<div class="auth-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card auth-card shadow">
+                    <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <h2 class="card-title">Join SkillSnap</h2>
+                        <p class="text-muted">Create your account to get started</p>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(AuthViewModel.RegisterErrorMessage))
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            @AuthViewModel.RegisterErrorMessage
+                        </div>
+                    }
+
+                    <div class="auth-form">
+                        <div class="mb-3">
+                            <label for="registerEmail" class="form-label">Email Address</label>
+                            <input id="registerEmail" 
+                                   type="email"
+                                   class="form-control" 
+                                   @bind="AuthViewModel.RegisterEmail" 
+                                   placeholder="Enter your email" />
+                            <div class="form-text">We'll use this email to sign you in.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="registerPassword" class="form-label">Password</label>
+                            <input id="registerPassword" 
+                                   type="password" 
+                                   class="form-control" 
+                                   @bind="AuthViewModel.RegisterPassword" 
+                                   placeholder="Create a password" />
+                            <div class="form-text">Password must be at least 6 characters long.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <input id="confirmPassword" 
+                                   type="password" 
+                                   class="form-control" 
+                                   @bind="AuthViewModel.ConfirmPassword" 
+                                   placeholder="Confirm your password" />
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="button" 
+                                    class="btn btn-primary btn-lg" 
+                                    disabled="@AuthViewModel.IsRegistering"
+                                    @onclick="HandleRegister">
+                                @if (AuthViewModel.IsRegistering)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    <span>Creating Account...</span>
+                                }
+                                else
+                                {
+                                    <span>Create Account</span>
+                                }
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <p class="mb-0">
+                            Already have an account? 
+                            <a href="/login" class="text-decoration-none">Sign in here</a>
+                        </p>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <a href="/" class="text-decoration-none">
+                            <i class="bi bi-arrow-left me-1"></i>
+                            Back to Home
+                        </a>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        // Check if user is already authenticated
+        await AuthViewModel.CheckAuthenticationStatusAsync();
+        if (AuthViewModel.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/");
+        }
+    }
+
+    private async Task HandleRegister()
+    {
+        var success = await AuthViewModel.RegisterAsync();
+        if (success)
+        {
+            // Show success message
+            await JSRuntime.InvokeVoidAsync("alert", "Registration successful! Welcome to SkillSnap!");
+            
+            // Navigate to home page
+            Navigation.NavigateTo("/");
+        }
+    }
+}

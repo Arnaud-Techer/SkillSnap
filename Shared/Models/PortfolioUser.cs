@@ -10,6 +10,10 @@ public class PortfolioUser
     public string Name {get;set;} = string.Empty;
     public string Bio {get;set;} = string.Empty;
     public string? ProfileImageUrl {get;set;}
+    
+    // Foreign key to ApplicationUser
+    public string? UserId {get;set;}
+    public ApplicationUser? User {get;set;}
 
     [JsonIgnore]
     public List<Project> Projects {get;set;} = new();

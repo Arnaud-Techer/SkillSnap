@@ -1,7 +1,86 @@
 ﻿@page "/"
+@using Client.ViewModels
+@inject AuthViewModel AuthViewModel
 
-<PageTitle>Home</PageTitle>
+<PageTitle>SkillSnap - Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="hero-section text-center py-5">
+                <div class="container">
+                    <h1 class="display-4 fw-bold text-primary mb-4">Welcome to SkillSnap</h1>
+                    <p class="lead text-muted mb-4">Showcase your skills, projects, and achievements in a beautiful portfolio</p>
+                    
+                    @if (AuthViewModel.IsAuthenticated)
+                    {
+                        <div class="alert alert-success" role="alert">
+                            <h4 class="alert-heading">Welcome back, @(AuthViewModel.CurrentUserEmail)!</h4>
+                            <p>You're successfully logged in. Start building your portfolio now!</p>
+                            <hr>
+                            <p class="mb-0">
+                                <a href="/portfolio" class="btn btn-primary btn-lg">View Portfolios</a>
+                            </p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="/login" class="btn btn-primary btn-lg">Sign In</a>
+                            <a href="/register" class="btn btn-outline-primary btn-lg">Create Account</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <i class="bi bi-person-badge text-primary" style="font-size: 3rem;"></i>
+                                </div>
+                                <h5 class="card-title">Create Your Portfolio</h5>
+                                <p class="card-text">Build a professional portfolio to showcase your skills and projects.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <i class="bi bi-code-slash text-success" style="font-size: 3rem;"></i>
+                                </div>
+                                <h5 class="card-title">Showcase Projects</h5>
+                                <p class="card-text">Display your best work with detailed descriptions and images.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <i class="bi bi-award text-warning" style="font-size: 3rem;"></i>
+                                </div>
+                                <h5 class="card-title">Highlight Skills</h5>
+                                <p class="card-text">List your technical skills with proficiency levels.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-Welcome to your new app.
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthViewModel.CheckAuthenticationStatusAsync();
+    }
+}

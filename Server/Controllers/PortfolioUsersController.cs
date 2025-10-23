@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Shared.Models;
+using System.Security.Claims;
 
 namespace Server.Controllers;
 
@@ -9,10 +12,12 @@ namespace Server.Controllers;
 public class PortfolioUsersController : ControllerBase
 {
     private readonly SkillSnapContext _context;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public PortfolioUsersController(SkillSnapContext context)
+    public PortfolioUsersController(SkillSnapContext context, UserManager<ApplicationUser> userManager)
     {
         _context = context;
+        _userManager = userManager;
     }
 
     // GET: api/PortfolioUsers
@@ -99,6 +104,7 @@ public class PortfolioUsersController : ControllerBase
 
     // POST: api/PortfolioUsers
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<PortfolioUser>> CreatePortfolioUser(PortfolioUser portfolioUser)
     {
         try
@@ -119,6 +125,16 @@ public class PortfolioUsersController : ControllerBase
                 return BadRequest(new { message = "Bio is required." });
             }
 
+            // Get the current user
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized(new { message = "User not authenticated." });
+            }
+
+            // Associate the portfolio with the current user
+            portfolioUser.UserId = userId;
+
             _context.PortfolioUsers.Add(portfolioUser);
             await _context.SaveChangesAsync();
 
@@ -132,6 +148,7 @@ public class PortfolioUsersController : ControllerBase
 
     // PUT: api/PortfolioUsers/5
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> UpdatePortfolioUser(int id, PortfolioUser portfolioUser)
     {
         try
@@ -196,6 +213,7 @@ public class PortfolioUsersController : ControllerBase
 
     // DELETE: api/PortfolioUsers/5
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<IActionResult> DeletePortfolioUser(int id)
     {
         try
@@ -295,6 +313,7 @@ public class PortfolioUsersController : ControllerBase
 
     // GET: api/PortfolioUsers/statistics
     [HttpGet("statistics")]
+    // [Authorize(Roles = "Admin")]
     public async Task<ActionResult<object>> GetPortfolioStatistics()
     {
         try

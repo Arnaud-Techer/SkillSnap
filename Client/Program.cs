@@ -16,6 +16,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiBaseU
 builder.Services.AddScoped<IPortfolioUserService, PortfolioUserService>();
 builder.Services.AddScoped<ISkillService, SkillService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<StatisticsService>();
 builder.Services.AddScoped<StatisticsRefreshService>();
 
@@ -23,5 +24,6 @@ builder.Services.AddScoped<StatisticsRefreshService>();
 builder.Services.AddScoped<PortfolioUserViewModel>();
 builder.Services.AddScoped<SkillViewModel>();
 builder.Services.AddScoped<ProjectViewModel>();
+builder.Services.AddScoped<AuthViewModel>();
 
 await builder.Build().RunAsync();

@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Shared.Models;
+using System.Security.Claims;
 
 namespace Server.Controllers;
 
@@ -11,11 +14,13 @@ public class SkillsController : ControllerBase
 {
     private readonly SkillSnapContext _context;
     private readonly IMemoryCache _cache;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public SkillsController(SkillSnapContext context, IMemoryCache cache)
+    public SkillsController(SkillSnapContext context, IMemoryCache cache, UserManager<ApplicationUser> userManager)
     {
         _context = context;
         _cache = cache;
+        _userManager = userManager;
     }
 
     // GET: api/Skills
@@ -172,6 +177,7 @@ public class SkillsController : ControllerBase
 
     // POST: api/Skills
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<Skill>> CreateSkill(Skill skill)
     {
         try
@@ -242,6 +248,7 @@ public class SkillsController : ControllerBase
 
     // PUT: api/Skills/5
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> UpdateSkill(int id, Skill skill)
     {
         try
@@ -346,6 +353,7 @@ public class SkillsController : ControllerBase
 
     // DELETE: api/Skills/5
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<IActionResult> DeleteSkill(int id)
     {
         try
@@ -373,6 +381,7 @@ public class SkillsController : ControllerBase
 
     // GET: api/Skills/statistics
     [HttpGet("statistics")]
+    // [Authorize(Roles = "Admin")]
     public async Task<ActionResult<object>> GetSkillStatistics()
     {
         try

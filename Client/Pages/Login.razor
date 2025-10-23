@@ -1,0 +1,130 @@
+@page "/login"
+@using Client.ViewModels
+@using Client.Services
+@inject AuthViewModel AuthViewModel
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Login - SkillSnap</PageTitle>
+
+<div class="auth-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card auth-card shadow">
+                    <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <h2 class="card-title">Welcome Back</h2>
+                        <p class="text-muted">Sign in to your SkillSnap account</p>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(AuthViewModel.LoginErrorMessage))
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            @AuthViewModel.LoginErrorMessage
+                        </div>
+                    }
+
+                    <div class="auth-form">
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">Email Address</label>
+                            <input id="loginEmail" 
+                                   type="email"
+                                   class="form-control" 
+                                   @bind="AuthViewModel.LoginEmail" 
+                                   placeholder="Enter your email" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <input id="loginPassword" 
+                                   type="password" 
+                                   class="form-control" 
+                                   @bind="AuthViewModel.LoginPassword" 
+                                   placeholder="Enter your password" />
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input id="rememberMe" 
+                                   type="checkbox"
+                                   class="form-check-input" 
+                                   @bind="AuthViewModel.RememberMe" />
+                            <label class="form-check-label" for="rememberMe">
+                                Remember me
+                            </label>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="button" 
+                                    class="btn btn-primary btn-lg" 
+                                    disabled="@AuthViewModel.IsLoggingIn"
+                                    @onclick="HandleLogin">
+                                @if (AuthViewModel.IsLoggingIn)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    <span>Signing In...</span>
+                                }
+                                else
+                                {
+                                    <span>Sign In</span>
+                                }
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <p class="mb-0">
+                            Don't have an account? 
+                            <a href="/register" class="text-decoration-none">Create one here</a>
+                        </p>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <a href="/" class="text-decoration-none">
+                            <i class="bi bi-arrow-left me-1"></i>
+                            Back to Home
+                        </a>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        // Check if user is already authenticated
+        await AuthViewModel.CheckAuthenticationStatusAsync();
+        if (AuthViewModel.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/");
+        }
+    }
+
+    private async Task HandleLogin()
+    {
+        Console.WriteLine("HandleLogin called");
+        Console.WriteLine($"Email: {AuthViewModel.LoginEmail}");
+        Console.WriteLine($"Password: {AuthViewModel.LoginPassword}");
+        
+        var success = await AuthViewModel.LoginAsync();
+        Console.WriteLine($"Login result: {success}");
+        
+        if (success)
+        {
+            // Show success message
+            await JSRuntime.InvokeVoidAsync("alert", "Login successful! Welcome back.");
+            
+            // Navigate to home page
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            Console.WriteLine($"Login failed: {AuthViewModel.LoginErrorMessage}");
+        }
+    }
+
+}

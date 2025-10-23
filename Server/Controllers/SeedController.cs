@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Shared.Models;
 using static System.Net.WebRequestMethods;
 
@@ -15,6 +16,7 @@ namespace Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Seed()
         {
             // Ensure the DbSet name matches the context property

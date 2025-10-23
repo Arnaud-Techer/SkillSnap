@@ -1,8 +1,9 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Shared.Models;
 
-public class SkillSnapContext : DbContext
+public class SkillSnapContext : IdentityDbContext<ApplicationUser>
 {
     public SkillSnapContext(DbContextOptions<SkillSnapContext> options) : base(options) {}
     
@@ -44,9 +45,18 @@ public class SkillSnapContext : DbContext
                 .HasForeignKey(e => e.PortfolioUserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Configure relationship with ApplicationUser
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             // Add indexes for better performance
             entity.HasIndex(e => e.Name)
                 .HasDatabaseName("IX_PortfolioUsers_Name");
+            
+            entity.HasIndex(e => e.UserId)
+                .HasDatabaseName("IX_PortfolioUsers_UserId");
         });
 
         // Configure Project entity
@@ -133,65 +143,8 @@ public class SkillSnapContext : DbContext
 
     private void SeedData(ModelBuilder modelBuilder)
     {
-        // Seed PortfolioUsers
-        modelBuilder.Entity<PortfolioUser>().HasData(
-            new PortfolioUser
-            {
-                Id = 1,
-                Name = "Alex Johnson",
-                Bio = "Full-stack developer passionate about creating innovative web applications and mobile solutions.",
-                ProfileImageUrl = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
-            },
-            new PortfolioUser
-            {
-                Id = 2,
-                Name = "Sarah Chen",
-                Bio = "UI/UX Designer and Frontend Developer specializing in creating beautiful, user-centered digital experiences.",
-                ProfileImageUrl = "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face"
-            },
-            new PortfolioUser
-            {
-                Id = 3,
-                Name = "Michael Rodriguez",
-                Bio = "Backend developer with expertise in cloud architecture and microservices. Passionate about scalable solutions.",
-                ProfileImageUrl = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-            }
-        );
-
-        // Seed Projects
-        modelBuilder.Entity<Project>().HasData(
-            new Project { Id = 1, Title = "E-Commerce Platform", Description = "A modern e-commerce solution built with React and Node.js featuring real-time inventory management and payment processing.", ImageUrl = "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop", PortfolioUserId = 1 },
-            new Project { Id = 2, Title = "Task Management App", Description = "Collaborative task management tool with real-time updates, drag-and-drop functionality, and team collaboration features.", ImageUrl = "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=300&fit=crop", PortfolioUserId = 1 },
-            new Project { Id = 3, Title = "Weather Dashboard", Description = "Beautiful weather application with location-based forecasts, interactive maps, and detailed weather analytics.", ImageUrl = "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=400&h=300&fit=crop", PortfolioUserId = 1 },
-            new Project { Id = 4, Title = "Design System", Description = "Comprehensive design system for a fintech startup including components, patterns, and accessibility guidelines.", ImageUrl = "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=400&h=300&fit=crop", PortfolioUserId = 2 },
-            new Project { Id = 5, Title = "Mobile Banking App", Description = "Intuitive mobile banking application with advanced security features, biometric authentication, and real-time transactions.", ImageUrl = "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&h=300&fit=crop", PortfolioUserId = 2 },
-            new Project { Id = 6, Title = "Cloud Infrastructure", Description = "Scalable cloud infrastructure setup using AWS with auto-scaling, load balancing, and monitoring solutions.", ImageUrl = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop", PortfolioUserId = 3 }
-        );
-
-        // Seed Skills
-        modelBuilder.Entity<Skill>().HasData(
-            // Alex Johnson's skills
-            new Skill { Id = 1, Name = "React", Level = "Expert", PortfolioUserId = 1 },
-            new Skill { Id = 2, Name = "Node.js", Level = "Advanced", PortfolioUserId = 1 },
-            new Skill { Id = 3, Name = "TypeScript", Level = "Advanced", PortfolioUserId = 1 },
-            new Skill { Id = 4, Name = "MongoDB", Level = "Intermediate", PortfolioUserId = 1 },
-            new Skill { Id = 5, Name = "AWS", Level = "Intermediate", PortfolioUserId = 1 },
-            new Skill { Id = 6, Name = "Docker", Level = "Novice", PortfolioUserId = 1 },
-            
-            // Sarah Chen's skills
-            new Skill { Id = 7, Name = "Figma", Level = "Expert", PortfolioUserId = 2 },
-            new Skill { Id = 8, Name = "Vue.js", Level = "Advanced", PortfolioUserId = 2 },
-            new Skill { Id = 9, Name = "CSS/SCSS", Level = "Expert", PortfolioUserId = 2 },
-            new Skill { Id = 10, Name = "Adobe Creative Suite", Level = "Advanced", PortfolioUserId = 2 },
-            new Skill { Id = 11, Name = "JavaScript", Level = "Advanced", PortfolioUserId = 2 },
-            
-            // Michael Rodriguez's skills
-            new Skill { Id = 12, Name = "C#", Level = "Expert", PortfolioUserId = 3 },
-            new Skill { Id = 13, Name = ".NET Core", Level = "Expert", PortfolioUserId = 3 },
-            new Skill { Id = 14, Name = "Azure", Level = "Advanced", PortfolioUserId = 3 },
-            new Skill { Id = 15, Name = "SQL Server", Level = "Advanced", PortfolioUserId = 3 },
-            new Skill { Id = 16, Name = "Microservices", Level = "Advanced", PortfolioUserId = 3 },
-            new Skill { Id = 17, Name = "Docker", Level = "Advanced", PortfolioUserId = 3 }
-        );
+        // Note: PortfolioUsers, Projects, and Skills will now be created by authenticated users
+        // through the application rather than being seeded here.
+        // This allows for proper user association and security.
     }
 }

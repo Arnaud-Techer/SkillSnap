@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Shared.Models;
+using System.Security.Claims;
 
 namespace Server.Controllers;
 
@@ -11,11 +14,13 @@ public class ProjectsController : ControllerBase
 {
     private readonly SkillSnapContext _context;
     private readonly IMemoryCache _cache;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public ProjectsController(SkillSnapContext context, IMemoryCache cache)
+    public ProjectsController(SkillSnapContext context, IMemoryCache cache, UserManager<ApplicationUser> userManager)
     {
         _context = context;
         _cache = cache;
+        _userManager = userManager;
     }
 
     // GET: api/Projects
@@ -147,6 +152,7 @@ public class ProjectsController : ControllerBase
 
     // POST: api/Projects
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<Project>> CreateProject(Project project)
     {
         try
@@ -200,6 +206,7 @@ public class ProjectsController : ControllerBase
 
     // PUT: api/Projects/5
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> UpdateProject(int id, Project project)
     {
         try
@@ -287,6 +294,7 @@ public class ProjectsController : ControllerBase
 
     // DELETE: api/Projects/5
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<IActionResult> DeleteProject(int id)
     {
         try
@@ -314,6 +322,7 @@ public class ProjectsController : ControllerBase
 
     // GET: api/Projects/statistics
     [HttpGet("statistics")]
+    // [Authorize(Roles = "Admin")]
     public async Task<ActionResult<object>> GetProjectStatistics()
     {
         try
