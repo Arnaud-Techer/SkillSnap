@@ -72,19 +72,26 @@
 
     private async Task HandleSubmit()
     {
+        Console.WriteLine($"[DEBUG] AddSkillModal.HandleSubmit called with: name='{localSkillName}', level='{localSkillLevel}'");
+        Console.WriteLine($"[DEBUG] isSubmitting={isSubmitting}, OnSubmit.HasDelegate={OnSubmit.HasDelegate}");
+        
         if (isSubmitting || !OnSubmit.HasDelegate)
         {
+            Console.WriteLine("[DEBUG] Early return from HandleSubmit");
             return;
         }
 
         isSubmitting = true;
         try
         {
+            Console.WriteLine("[DEBUG] Invoking OnSubmit...");
             await OnSubmit.InvokeAsync((localSkillName, localSkillLevel));
+            Console.WriteLine("[DEBUG] OnSubmit completed");
         }
         finally
         {
             isSubmitting = false;
+            Console.WriteLine("[DEBUG] HandleSubmit finally block - isSubmitting set to false");
         }
     }
 }

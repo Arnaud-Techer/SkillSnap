@@ -1,0 +1,96 @@
+/* SearchBar.razor scoped styles */
+
+.search-bar-container {
+    flex: 1;
+    max-width: 28rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+.search-container {
+    position: relative;
+}
+
+.search-input {
+    display: block;
+    width: 100%;
+    padding-left: 2.5rem;
+    padding-right: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    line-height: 1.25;
+    background-color: white;
+    color: #6b7280;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.search-input:disabled {
+    background-color: #f9fafb;
+    cursor: not-allowed;
+}
+
+.search-icon {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    padding-left: 0.75rem;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+
+.search-icon-svg {
+    height: 1.25rem;
+    width: 1.25rem;
+    color: #9ca3af;
+}
+
+.search-spinner {
+    height: 1.25rem;
+    width: 1.25rem;
+    color: #3b82f6;
+    animation: spin 1s linear infinite;
+}
+
+.search-clear {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    padding-right: 0.75rem;
+    display: flex;
+    align-items: center;
+    color: #9ca3af;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.search-clear:hover {
+    color: #4b5563;
+}
+
+.search-clear-icon {
+    height: 1.25rem;
+    width: 1.25rem;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

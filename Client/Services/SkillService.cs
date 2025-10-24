@@ -123,30 +123,43 @@ public class SkillService : ISkillService
     // POST operations
     public async Task<Skill?> CreateSkillAsync(Skill skill)
     {
+        Console.WriteLine($"[DEBUG] SkillService.CreateSkillAsync called with skill: {skill.Name}, {skill.Level}, PortfolioUserId={skill.PortfolioUserId}");
         try
         {
+            Console.WriteLine("[DEBUG] Making HTTP POST request to api/Skills...");
             var response = await _httpClient.PostAsJsonAsync("api/Skills", skill, _jsonOptions);
+            Console.WriteLine($"[DEBUG] HTTP response received. Status: {response.StatusCode}, IsSuccessStatusCode: {response.IsSuccessStatusCode}");
             
             if (response.IsSuccessStatusCode)
             {
+                Console.WriteLine("[DEBUG] Response is successful, reading content...");
                 var createdSkill = await response.Content.ReadFromJsonAsync<Skill>(_jsonOptions);
+                Console.WriteLine($"[DEBUG] Created skill from response: {createdSkill?.Name}, {createdSkill?.Level}, PortfolioUserId={createdSkill?.PortfolioUserId}");
                 return createdSkill;
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
+                Console.WriteLine("[DEBUG] Unauthorized response received");
                 throw new UnauthorizedAccessException("You must be signed in to create skills.");
             }
             else
             {
+                Console.WriteLine($"[DEBUG] Non-success response: {response.StatusCode}");
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"[DEBUG] Error content: {errorContent}");
                 return null;
             }
         }
         catch (UnauthorizedAccessException)
         {
+            Console.WriteLine("[DEBUG] UnauthorizedAccessException caught and re-thrown");
             throw; // Re-throw to be handled by the UI
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine($"[DEBUG] Exception in CreateSkillAsync: {ex.Message}");
+            Console.WriteLine($"[DEBUG] Exception type: {ex.GetType().Name}");
+            Console.WriteLine($"[DEBUG] Stack trace: {ex.StackTrace}");
             return null;
         }
     }

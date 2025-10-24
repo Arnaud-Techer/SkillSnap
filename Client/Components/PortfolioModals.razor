@@ -1,0 +1,230 @@
+@using Shared.Models
+@using Client.Models
+@using Client.ViewModels
+@using Client.Components
+
+<!-- Skills Modal -->
+@if (ShowSkillsModal)
+{
+    <div class="modal-backdrop" @onclick="OnCloseSkillsModal">
+        <div class="modal-content" @onclick:stopPropagation="true">
+            <div class="modal-header skills-header">
+                <div class="modal-header-content">
+                    <h3 class="modal-title">
+                        <svg class="modal-title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                        Skills & Expertise
+                    </h3>
+                    <button @onclick="OnCloseSkillsModal" class="modal-close-button">
+                        <svg class="modal-close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="modal-body">
+                @if (SkillViewModel.IsLoading)
+                {
+                    <div class="modal-loading">
+                        <div class="modal-loading-spinner"></div>
+                        <span class="modal-loading-text">Loading skills...</span>
+                    </div>
+                }
+                else
+                {
+                    <SkillTags Skills="SkillViewModel.Skills?.ToList()" 
+                               OnAddSkill="OnAddSkill"
+                               OnEditSkill="OnEditSkill"
+                               OnDeleteSkill="OnDeleteSkill" />
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Projects Modal -->
+@if (ShowProjectsModal)
+{
+    <div class="modal-backdrop" @onclick="OnCloseProjectsModal">
+        <div class="modal-content projects-modal" @onclick:stopPropagation="true">
+            <div class="modal-header projects-header">
+                <div class="modal-header-content">
+                    <h3 class="modal-title">
+                        <svg class="modal-title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                        Featured Projects
+                    </h3>
+                    <button @onclick="OnCloseProjectsModal" class="modal-close-button">
+                        <svg class="modal-close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="modal-body">
+                @if (ProjectViewModel.IsLoading)
+                {
+                    <div class="modal-loading">
+                        <div class="modal-loading-spinner projects-spinner"></div>
+                        <span class="modal-loading-text">Loading projects...</span>
+                    </div>
+                }
+                else
+                {
+                    <ProjectList Projects="ProjectViewModel.Projects?.ToList()" 
+                                 OnAddProject="HandleAddProjectToExisting"
+                                 OnEditProject="OnEditProject"
+                                 OnDeleteProject="OnDeleteProject" />
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Add Portfolio Modal -->
+@if (ShowAddPortfolioModal)
+{
+    <AddPortfolioModal 
+        PendingProjects="PendingProjects"
+        PendingSkills="PendingSkills"
+        OnClose="OnCloseAddPortfolioModal"
+        OnSubmit="OnPortfolioSubmit"
+        OnAddProject="OnAddProject"
+        OnAddSkill="OnAddSkill" />
+}
+
+<!-- Delete Portfolio Modal -->
+@if (ShowDeletePortfolioModal)
+{
+    <DeletePortfolioModal 
+        ShowModal="ShowDeletePortfolioModal"
+        Portfolios="Portfolios"
+        OnClose="OnCloseDeletePortfolioModal"
+        OnDelete="OnDeletePortfolio" />
+}
+
+<!-- Add Project Modal -->
+@if (ShowAddProjectModal)
+{
+    <AddProjectModal 
+        OnClose="OnCloseAddProjectModal"
+        OnSubmit="OnProjectSubmit" />
+}
+
+<!-- Add Skill Modal -->
+@if (ShowAddSkillModal)
+{
+    <AddSkillModal 
+        OnClose="OnCloseAddSkillModal"
+        OnSubmit="OnSkillSubmit" />
+}
+
+<!-- Add Project to Existing Portfolio Modal -->
+@if (ShowAddProjectToExistingModal)
+{
+    <AddProjectModal 
+        OnClose="OnCloseAddProjectToExistingModal"
+        OnSubmit="OnAddProjectToExisting" />
+}
+
+<!-- Add Skill to Existing Portfolio Modal -->
+@if (ShowAddSkillToExistingModal)
+{
+    <AddSkillModal 
+        OnClose="OnCloseAddSkillToExistingModal"
+        OnSubmit="HandleAddSkillToExistingWrapper" />
+}
+
+<!-- Edit Skill Modal -->
+@if (ShowEditSkillModal)
+{
+    <EditSkillModal 
+        ShowModal="ShowEditSkillModal"
+        SkillToEdit="SelectedSkillForEdit"
+        OnClose="OnCloseEditSkillModal"
+        OnSubmit="OnEditSkill" />
+}
+
+<!-- Edit Project Modal -->
+@if (ShowEditProjectModal)
+{
+    <EditProjectModal 
+        ShowModal="ShowEditProjectModal"
+        ProjectToEdit="SelectedProjectForEdit"
+        OnClose="OnCloseEditProjectModal"
+        OnSubmit="OnEditProject" />
+}
+
+@code {
+    [Parameter] public SkillViewModel SkillViewModel { get; set; } = null!;
+    [Parameter] public ProjectViewModel ProjectViewModel { get; set; } = null!;
+    
+    // Modal visibility states
+    [Parameter] public bool ShowSkillsModal { get; set; } = false;
+    [Parameter] public bool ShowProjectsModal { get; set; } = false;
+    [Parameter] public bool ShowAddPortfolioModal { get; set; } = false;
+    [Parameter] public bool ShowDeletePortfolioModal { get; set; } = false;
+    [Parameter] public bool ShowAddProjectModal { get; set; } = false;
+    [Parameter] public bool ShowAddSkillModal { get; set; } = false;
+    [Parameter] public bool ShowAddProjectToExistingModal { get; set; } = false;
+    [Parameter] public bool ShowAddSkillToExistingModal { get; set; } = false;
+    [Parameter] public bool ShowEditSkillModal { get; set; } = false;
+    [Parameter] public bool ShowEditProjectModal { get; set; } = false;
+    
+    // Data parameters
+    [Parameter] public List<Project> PendingProjects { get; set; } = new();
+    [Parameter] public List<Skill> PendingSkills { get; set; } = new();
+    [Parameter] public IEnumerable<PortfolioUserSummary>? Portfolios { get; set; }
+    [Parameter] public Skill? SelectedSkillForEdit { get; set; }
+    [Parameter] public Project? SelectedProjectForEdit { get; set; }
+    
+    // Event callbacks
+    [Parameter] public EventCallback OnCloseSkillsModal { get; set; }
+    [Parameter] public EventCallback OnCloseProjectsModal { get; set; }
+    [Parameter] public EventCallback OnCloseAddPortfolioModal { get; set; }
+    [Parameter] public EventCallback OnCloseDeletePortfolioModal { get; set; }
+    [Parameter] public EventCallback OnCloseAddProjectModal { get; set; }
+    [Parameter] public EventCallback OnCloseAddSkillModal { get; set; }
+    [Parameter] public EventCallback OnCloseAddProjectToExistingModal { get; set; }
+    [Parameter] public EventCallback OnCloseAddSkillToExistingModal { get; set; }
+    [Parameter] public EventCallback OnCloseEditSkillModal { get; set; }
+    [Parameter] public EventCallback OnCloseEditProjectModal { get; set; }
+    
+    [Parameter] public EventCallback<(string name, string bio, string imageUrl)> OnPortfolioSubmit { get; set; }
+    [Parameter] public EventCallback<(string title, string description, string imageUrl)> OnProjectSubmit { get; set; }
+    [Parameter] public EventCallback<(string name, string level)> OnSkillSubmit { get; set; }
+    [Parameter] public EventCallback OnAddProject { get; set; }
+    [Parameter] public EventCallback OnAddSkill { get; set; }
+    [Parameter] public EventCallback<(string title, string description, string imageUrl)> OnAddProjectToExisting { get; set; }
+    [Parameter] public EventCallback<(string name, string level)> OnAddSkillToExisting { get; set; }
+    
+    private async Task HandleAddSkillToExistingWrapper((string name, string level) formData)
+    {
+        Console.WriteLine($"[DEBUG] PortfolioModals.HandleAddSkillToExistingWrapper called with: name='{formData.name}', level='{formData.level}'");
+        Console.WriteLine($"[DEBUG] OnAddSkillToExisting.HasDelegate: {OnAddSkillToExisting.HasDelegate}");
+        await OnAddSkillToExisting.InvokeAsync(formData);
+        Console.WriteLine("[DEBUG] PortfolioModals.HandleAddSkillToExistingWrapper completed");
+    }
+    
+    protected override void OnParametersSet()
+    {
+        Console.WriteLine($"[DEBUG] PortfolioModals.OnParametersSet - ShowAddSkillToExistingModal: {ShowAddSkillToExistingModal}");
+        base.OnParametersSet();
+    }
+    [Parameter] public EventCallback<Skill> OnEditSkill { get; set; }
+    [Parameter] public EventCallback<Project> OnEditProject { get; set; }
+    [Parameter] public EventCallback<Skill> OnDeleteSkill { get; set; }
+    [Parameter] public EventCallback<Project> OnDeleteProject { get; set; }
+    [Parameter] public EventCallback<int> OnDeletePortfolio { get; set; }
+
+
+    private async Task HandleAddProjectToExisting()
+    {
+        // Open the add project modal
+        await OnAddProject.InvokeAsync();
+    }
+}

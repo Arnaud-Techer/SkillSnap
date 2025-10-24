@@ -1,0 +1,90 @@
+/* EmptyState.razor scoped styles */
+
+.empty-state-container {
+    text-align: center;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+.empty-state-icon {
+    background-color: #f3f4f6;
+    border-radius: 50%;
+    width: 8rem;
+    height: 8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+}
+
+.empty-state-icon-sm {
+    width: 6rem;
+    height: 6rem;
+    margin: 0 auto 1.5rem;
+    background-color: #fef3c7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-state-icon-svg {
+    width: 4rem;
+    height: 4rem;
+    color: #9ca3af;
+}
+
+.empty-state-icon-sm .empty-state-icon-svg {
+    width: 3rem;
+    height: 3rem;
+    color: #d97706;
+}
+
+.empty-state-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state-title-large {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 1rem;
+}
+
+.empty-state-description {
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    max-width: 28rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.empty-state-description-large {
+    color: #6b7280;
+    margin-bottom: 2rem;
+    max-width: 28rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.empty-state-highlight {
+    font-weight: 600;
+}
+
+.empty-state-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+    .empty-state-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+}

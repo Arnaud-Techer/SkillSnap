@@ -1,0 +1,68 @@
+/* PortfolioGrid.razor scoped styles */
+
+.search-results-header {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 0.5rem;
+}
+
+.search-results-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search-results-info {
+    display: flex;
+    align-items: center;
+}
+
+.search-results-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #2563eb;
+    margin-right: 0.5rem;
+}
+
+.search-results-text {
+    color: #1e40af;
+    font-weight: 500;
+}
+
+.search-results-query {
+    font-weight: 600;
+}
+
+.search-results-clear {
+    color: #2563eb;
+    font-weight: 500;
+    font-size: 0.875rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.search-results-clear:hover {
+    color: #1d4ed8;
+}
+
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .portfolio-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .portfolio-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}

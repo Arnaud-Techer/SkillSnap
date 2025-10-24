@@ -1,0 +1,47 @@
+@using Shared.Models
+@using Client.Models
+@using Client.Components
+
+@if (Portfolios != null && Portfolios.Any())
+{
+    @if (IsShowingSearchResults)
+    {
+        <div class="search-results-header">
+            <div class="search-results-content">
+                <div class="search-results-info">
+                    <svg class="search-results-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <span class="search-results-text">
+                        Search results for "<span class="search-results-query">@SearchQuery</span>" 
+                        (@Portfolios.Count() portfolio@(Portfolios.Count() == 1 ? "" : "s"))
+                    </span>
+                </div>
+                <button @onclick="OnClearSearch" class="search-results-clear">
+                    Clear search
+                </button>
+            </div>
+        </div>
+    }
+    
+    <div class="portfolio-grid">
+        @foreach (var user in Portfolios)
+        {
+            <ProfileCard 
+                User="user"
+                OnViewSkills="OnViewSkills"
+                OnViewProjects="OnViewProjects"
+                OnContact="OnContact" />
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public IEnumerable<PortfolioUserSummary>? Portfolios { get; set; }
+    [Parameter] public bool IsShowingSearchResults { get; set; } = false;
+    [Parameter] public string SearchQuery { get; set; } = string.Empty;
+    [Parameter] public EventCallback<int> OnViewSkills { get; set; }
+    [Parameter] public EventCallback<int> OnViewProjects { get; set; }
+    [Parameter] public EventCallback<PortfolioUserSummary> OnContact { get; set; }
+    [Parameter] public EventCallback OnClearSearch { get; set; }
+}

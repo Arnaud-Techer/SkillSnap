@@ -1,0 +1,105 @@
+/* PortfolioModals.razor scoped styles */
+
+.modal-content {
+    background-color: white;
+    border-radius: 0.5rem;
+    max-width: 64rem;
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
+}
+
+.projects-modal {
+    max-width: 72rem;
+}
+
+.modal-header {
+    padding: 1.5rem;
+    color: white;
+}
+
+.skills-header {
+    background: linear-gradient(to right, #3b82f6, #8b5cf6);
+}
+
+.projects-header {
+    background: linear-gradient(to right, #10b981, #2563eb);
+}
+
+.modal-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.modal-title-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.75rem;
+}
+
+.modal-close-button {
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 0.25rem;
+}
+
+.modal-close-button:hover {
+    color: #e5e7eb;
+}
+
+.modal-close-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.modal-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.modal-loading-spinner {
+    animation: spin 1s linear infinite;
+    border-radius: 50%;
+    height: 2rem;
+    width: 2rem;
+    border-bottom: 2px solid #3b82f6;
+}
+
+.projects-spinner {
+    border-bottom-color: #10b981;
+}
+
+.modal-loading-text {
+    margin-left: 0.75rem;
+    color: #4b5563;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
