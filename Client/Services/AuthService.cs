@@ -24,7 +24,6 @@ public class AuthService : IAuthService
     {
         try
         {
-            Console.WriteLine($"LoginAsync called with email: {email}");
             
             var loginRequest = new
             {
@@ -33,12 +32,9 @@ public class AuthService : IAuthService
                 rememberMe = rememberMe
             };
 
-            Console.WriteLine($"Making API call to: {_httpClient.BaseAddress}/api/Auth/login");
             var response = await _httpClient.PostAsJsonAsync("/api/Auth/login", loginRequest);
             var content = await response.Content.ReadAsStringAsync();
             
-            Console.WriteLine($"API Response Status: {response.StatusCode}");
-            Console.WriteLine($"API Response Content: {content}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -189,9 +185,8 @@ public class AuthService : IAuthService
 
             AuthenticationStateChanged?.Invoke(false);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"Error during logout: {ex.Message}");
         }
     }
 
@@ -226,9 +221,8 @@ public class AuthService : IAuthService
                 });
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"Error getting current user: {ex.Message}");
         }
         return null;
     }

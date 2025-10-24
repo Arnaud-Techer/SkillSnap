@@ -33,7 +33,6 @@ public class AuthViewModel
 
     public async Task<bool> LoginAsync()
     {
-        Console.WriteLine($"AuthViewModel.LoginAsync called with email: {LoginEmail}");
         
         // Clear previous error
         LoginErrorMessage = null;
@@ -42,26 +41,22 @@ public class AuthViewModel
         if (string.IsNullOrWhiteSpace(LoginEmail))
         {
             LoginErrorMessage = "Please enter your email address.";
-            Console.WriteLine("Login failed: Empty email");
             return false;
         }
         
         if (string.IsNullOrWhiteSpace(LoginPassword))
         {
             LoginErrorMessage = "Please enter your password.";
-            Console.WriteLine("Login failed: Empty password");
             return false;
         }
         
         if (LoginPassword.Length < 6)
         {
             LoginErrorMessage = "Password must be at least 6 characters long.";
-            Console.WriteLine("Login failed: Password too short");
             return false;
         }
 
         IsLoggingIn = true;
-        Console.WriteLine("Starting login process...");
 
         try
         {

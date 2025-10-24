@@ -27,9 +27,8 @@ public class ProjectService : IProjectService
             var response = await _httpClient.GetFromJsonAsync<IEnumerable<Project>>("api/Projects", _jsonOptions);
             return response ?? Enumerable.Empty<Project>();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return Enumerable.Empty<Project>();
         }
     }
@@ -41,9 +40,8 @@ public class ProjectService : IProjectService
             var response = await _httpClient.GetFromJsonAsync<Project>($"api/Projects/{id}", _jsonOptions);
             return response;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return null;
         }
     }
@@ -55,9 +53,8 @@ public class ProjectService : IProjectService
             var response = await _httpClient.GetFromJsonAsync<IEnumerable<Project>>($"api/Projects/by-user/{portfolioUserId}", _jsonOptions);
             return response ?? Enumerable.Empty<Project>();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return Enumerable.Empty<Project>();
         }
     }
@@ -76,9 +73,8 @@ public class ProjectService : IProjectService
             var response = await _httpClient.GetFromJsonAsync<IEnumerable<Project>>($"api/Projects/search{queryString}", _jsonOptions);
             return response ?? Enumerable.Empty<Project>();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return Enumerable.Empty<Project>();
         }
     }
@@ -90,9 +86,8 @@ public class ProjectService : IProjectService
             var response = await _httpClient.GetFromJsonAsync<object>("api/Projects/statistics", _jsonOptions);
             return response;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return null;
         }
     }
@@ -109,15 +104,21 @@ public class ProjectService : IProjectService
                 var createdProject = await response.Content.ReadFromJsonAsync<Project>(_jsonOptions);
                 return createdProject;
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedAccessException("You must be signed in to create projects.");
+            }
             else
             {
-                Console.WriteLine($"Failed to create project. Status: {response.StatusCode}");
                 return null;
             }
         }
-        catch (Exception ex)
+        catch (UnauthorizedAccessException)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
+            throw; // Re-throw to be handled by the UI
+        }
+        catch (Exception)
+        {
             return null;
         }
     }
@@ -130,9 +131,8 @@ public class ProjectService : IProjectService
             var response = await _httpClient.PutAsJsonAsync($"api/Projects/{id}", project, _jsonOptions);
             return response.IsSuccessStatusCode;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return false;
         }
     }
@@ -145,9 +145,8 @@ public class ProjectService : IProjectService
             var response = await _httpClient.DeleteAsync($"api/Projects/{id}");
             return response.IsSuccessStatusCode;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return false;
         }
     }

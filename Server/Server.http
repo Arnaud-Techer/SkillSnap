@@ -1,6 +1,0 @@
-@Server_HostAddress = http://localhost:5195
-
-POST {{Server_HostAddress}}/api/Seed
-Accept: application/json
-
-###

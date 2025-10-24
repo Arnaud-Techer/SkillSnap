@@ -71,16 +71,13 @@ public class AuthController : ControllerBase
     {
         try
         {
-            Console.WriteLine($"Login attempt for email: {model.Email}");
             
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("Model state is invalid");
                 return BadRequest(ModelState);
             }
 
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-            Console.WriteLine($"SignIn result: {result.Succeeded}");
 
             if (result.Succeeded)
             {

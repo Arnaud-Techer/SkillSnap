@@ -137,14 +137,6 @@ public class SkillSnapContext : IdentityDbContext<ApplicationUser>
                 .HasDatabaseName("IX_Skills_Name_PortfolioUserId_Unique");
         });
 
-        // Seed initial data
-        SeedData(modelBuilder);
     }
 
-    private void SeedData(ModelBuilder modelBuilder)
-    {
-        // Note: PortfolioUsers, Projects, and Skills will now be created by authenticated users
-        // through the application rather than being seeded here.
-        // This allows for proper user association and security.
-    }
 }

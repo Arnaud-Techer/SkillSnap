@@ -421,7 +421,6 @@
     {
         await AuthViewModel.CheckAuthenticationStatusAsync();
         await PortfolioUserViewModel.LoadPortfolioUsersAsync();
-        LogViewModelState();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -436,15 +435,6 @@
 
 
 
-    private void LogViewModelState()
-    {
-        Console.WriteLine($"=== PortfolioUserViewModel State ===");
-        Console.WriteLine($"IsLoading: {PortfolioUserViewModel.IsLoading}");
-        Console.WriteLine($"ErrorMessage: '{PortfolioUserViewModel.ErrorMessage}'");
-        Console.WriteLine($"PortfolioUsers Count: {PortfolioUserViewModel.PortfolioUsers?.Count() ?? 0}");
-        Console.WriteLine($"PortfolioUsers IsNull: {PortfolioUserViewModel.PortfolioUsers == null}");
-        Console.WriteLine($"=====================================");
-    }
 
     // Modal control methods
     private void OpenAddPortfolioModal()
@@ -497,8 +487,14 @@
     }
 
     // Modal control methods for existing portfolios
-    private void OpenAddProjectToExistingModal()
+    private async Task OpenAddProjectToExistingModal()
     {
+        if (!AuthViewModel.IsAuthenticated)
+        {
+            await ShowAuthRequiredMessage();
+            return;
+        }
+        
         showAddProjectToExistingModal = true;
         StateHasChanged();
     }
@@ -509,8 +505,14 @@
         StateHasChanged();
     }
 
-    private void OpenAddSkillToExistingModal()
+    private async Task OpenAddSkillToExistingModal()
     {
+        if (!AuthViewModel.IsAuthenticated)
+        {
+            await ShowAuthRequiredMessage();
+            return;
+        }
+        
         showAddSkillToExistingModal = true;
         StateHasChanged();
     }
@@ -590,15 +592,17 @@
             await ProjectViewModel.LoadProjectsByUserAsync(selectedUserId);
             
             // Refresh the main portfolio list to update counters
-            Console.WriteLine($"Refreshing portfolio list after adding project to user {selectedUserId}");
             await PortfolioUserViewModel.LoadPortfolioUsersAsync();
             
             // Refresh navigation statistics
             StatisticsRefreshService.NotifyStatisticsChanged();
         }
-        catch (Exception ex)
+        catch (UnauthorizedAccessException ex)
         {
-            Console.WriteLine($"Error adding project to existing portfolio: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", ex.Message);
+        }
+        catch (Exception)
+        {
         }
         finally
         {
@@ -634,15 +638,17 @@
             await SkillViewModel.LoadSkillsByUserAsync(selectedUserId);
             
             // Refresh the main portfolio list to update counters
-            Console.WriteLine($"Refreshing portfolio list after adding skill to user {selectedUserId}");
             await PortfolioUserViewModel.LoadPortfolioUsersAsync();
             
             // Refresh navigation statistics
             StatisticsRefreshService.NotifyStatisticsChanged();
         }
-        catch (Exception ex)
+        catch (UnauthorizedAccessException ex)
         {
-            Console.WriteLine($"Error adding skill to existing portfolio: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", ex.Message);
+        }
+        catch (Exception)
+        {
         }
         finally
         {
@@ -700,9 +706,12 @@
                 StateHasChanged();
             }
         }
-        catch (Exception ex)
+        catch (UnauthorizedAccessException ex)
         {
-            Console.WriteLine($"Error creating portfolio: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", ex.Message);
+        }
+        catch (Exception)
+        {
             // You could add error handling here
         }
     }
@@ -727,7 +736,6 @@
     {
         // TODO: Implement contact functionality
         // This could open a contact form, email client, or redirect to a contact page
-        Console.WriteLine($"Contacting developer: {user.Name}");
     }
 
     private void CloseSkillsModal()
@@ -746,10 +754,8 @@
 
     private async Task ReloadPortfolios()
     {
-        Console.WriteLine("=== Reloading Portfolios ===");
         PortfolioUserViewModel.ClearError();
         await PortfolioUserViewModel.LoadPortfolioUsersAsync();
-        LogViewModelState();
         StateHasChanged();
     }
 
@@ -814,24 +820,27 @@
                 // Refresh navigation statistics
                 StatisticsRefreshService.NotifyStatisticsChanged();
                 
-                Console.WriteLine($"Successfully deleted portfolio with ID: {portfolioId}");
             }
             else
             {
-                Console.WriteLine($"Failed to delete portfolio with ID: {portfolioId}");
                 // You could add error handling here, like showing a toast notification
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"Error deleting portfolio: {ex.Message}");
             // You could add error handling here, like showing a toast notification
         }
     }
 
     // Edit Skill Modal Methods
-    private void OpenEditSkillModal(Skill skill)
+    private async Task OpenEditSkillModal(Skill skill)
     {
+        if (!AuthViewModel.IsAuthenticated)
+        {
+            await ShowAuthRequiredMessage();
+            return;
+        }
+        
         selectedSkillForEdit = skill;
         showEditSkillModal = true;
         StateHasChanged();
@@ -863,22 +872,25 @@
                 // Refresh navigation statistics
                 StatisticsRefreshService.NotifyStatisticsChanged();
                 
-                Console.WriteLine($"Successfully updated skill: {updatedSkill.Name}");
             }
             else
             {
-                Console.WriteLine($"Failed to update skill: {updatedSkill.Name}");
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"Error updating skill: {ex.Message}");
         }
     }
 
     // Edit Project Modal Methods
-    private void OpenEditProjectModal(Project project)
+    private async Task OpenEditProjectModal(Project project)
     {
+        if (!AuthViewModel.IsAuthenticated)
+        {
+            await ShowAuthRequiredMessage();
+            return;
+        }
+        
         selectedProjectForEdit = project;
         showEditProjectModal = true;
         StateHasChanged();
@@ -910,22 +922,25 @@
                 // Refresh navigation statistics
                 StatisticsRefreshService.NotifyStatisticsChanged();
                 
-                Console.WriteLine($"Successfully updated project: {updatedProject.Title}");
             }
             else
             {
-                Console.WriteLine($"Failed to update project: {updatedProject.Title}");
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"Error updating project: {ex.Message}");
         }
     }
 
     // Delete Skill Method
     private async Task HandleDeleteSkill(Skill skill)
     {
+        if (!AuthViewModel.IsAuthenticated)
+        {
+            await ShowAuthRequiredMessage();
+            return;
+        }
+        
         try
         {
             var success = await SkillViewModel.DeleteSkillAsync(skill.Id);
@@ -941,22 +956,25 @@
                 // Refresh navigation statistics
                 StatisticsRefreshService.NotifyStatisticsChanged();
                 
-                Console.WriteLine($"Successfully deleted skill: {skill.Name}");
             }
             else
             {
-                Console.WriteLine($"Failed to delete skill: {skill.Name}");
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"Error deleting skill: {ex.Message}");
         }
     }
 
     // Delete Project Method
     private async Task HandleDeleteProject(Project project)
     {
+        if (!AuthViewModel.IsAuthenticated)
+        {
+            await ShowAuthRequiredMessage();
+            return;
+        }
+        
         try
         {
             var success = await ProjectViewModel.DeleteProjectAsync(project.Id);
@@ -972,16 +990,13 @@
                 // Refresh navigation statistics
                 StatisticsRefreshService.NotifyStatisticsChanged();
                 
-                Console.WriteLine($"Successfully deleted project: {project.Title}");
             }
             else
             {
-                Console.WriteLine($"Failed to delete project: {project.Title}");
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"Error deleting project: {ex.Message}");
         }
     }
 
@@ -1050,11 +1065,9 @@
             await PortfolioUserViewModel.SearchPortfolioUsersAsync();
             searchResults = PortfolioUserViewModel.PortfolioUsers;
             
-            Console.WriteLine($"Search performed for: '{searchQuery}' - Found {searchResults?.Count() ?? 0} results");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"Error performing search: {ex.Message}");
             searchResults = Enumerable.Empty<PortfolioUserSummary>();
         }
         finally
@@ -1079,7 +1092,6 @@
         await PortfolioUserViewModel.LoadPortfolioUsersAsync();
         StateHasChanged();
         
-        Console.WriteLine("Search cleared - showing all portfolios");
     }
 
     private async Task ShowAuthRequiredMessage()

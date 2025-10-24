@@ -72,9 +72,6 @@ SkillSnap/
    dotnet run --project Server
    ```
 
-5. **Open your browser**
-   Navigate to `https://localhost:7001` to view the application.
-
 ## 📚 Learning Objectives
 
 This project demonstrates key concepts in **.NET Full-Stack Development**:
@@ -253,6 +250,53 @@ dotnet run --project Server
 ### Production
 ```bash
 dotnet publish -c Release -o ./publish
+```
+
+## 🚀 Deployment
+
+### Environment Variables
+
+For production deployment, set the following environment variables:
+
+```bash
+# JWT Secret Key (must be at least 32 characters long)
+JWT_SECRET_KEY=YourSuperSecretKeyThatIsAtLeast32CharactersLong!
+
+# API Base URL for production
+API_BASE_URL=https://your-api-domain.com
+```
+
+### Production Configuration
+
+1. **Update JWT Secret**: Replace the placeholder JWT key in `Server/appsettings.json` with a secure, randomly generated key
+2. **Set API URL**: Update the `ApiBaseUrl` in `Client/wwwroot/appsettings.json` to point to your production API
+3. **Database**: The application uses SQLite by default. For production, consider using a more robust database like SQL Server or PostgreSQL
+4. **HTTPS**: Ensure your production environment uses HTTPS for security
+
+### Docker Deployment (Optional)
+
+```dockerfile
+# Example Dockerfile for the Server
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+COPY ["Server/Server.csproj", "Server/"]
+RUN dotnet restore "Server/Server.csproj"
+COPY . .
+WORKDIR "/src/Server"
+RUN dotnet build "Server.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "Server.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Server.dll"]
 ```
 
 ## 📝 Contributing

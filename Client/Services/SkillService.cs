@@ -27,9 +27,8 @@ public class SkillService : ISkillService
             var response = await _httpClient.GetFromJsonAsync<IEnumerable<Skill>>("api/Skills", _jsonOptions);
             return response ?? Enumerable.Empty<Skill>();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return Enumerable.Empty<Skill>();
         }
     }
@@ -41,9 +40,8 @@ public class SkillService : ISkillService
             var response = await _httpClient.GetFromJsonAsync<Skill>($"api/Skills/{id}", _jsonOptions);
             return response;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return null;
         }
     }
@@ -55,9 +53,8 @@ public class SkillService : ISkillService
             var response = await _httpClient.GetFromJsonAsync<IEnumerable<Skill>>($"api/Skills/by-user/{portfolioUserId}", _jsonOptions);
             return response ?? Enumerable.Empty<Skill>();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return Enumerable.Empty<Skill>();
         }
     }
@@ -78,9 +75,8 @@ public class SkillService : ISkillService
             var response = await _httpClient.GetFromJsonAsync<IEnumerable<Skill>>($"api/Skills/search{queryString}", _jsonOptions);
             return response ?? Enumerable.Empty<Skill>();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return Enumerable.Empty<Skill>();
         }
     }
@@ -92,9 +88,8 @@ public class SkillService : ISkillService
             var response = await _httpClient.GetFromJsonAsync<IEnumerable<Skill>>($"api/Skills/by-level/{Uri.EscapeDataString(level)}", _jsonOptions);
             return response ?? Enumerable.Empty<Skill>();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return Enumerable.Empty<Skill>();
         }
     }
@@ -106,9 +101,8 @@ public class SkillService : ISkillService
             var response = await _httpClient.GetFromJsonAsync<object>("api/Skills/statistics", _jsonOptions);
             return response;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return null;
         }
     }
@@ -120,9 +114,8 @@ public class SkillService : ISkillService
             var response = await _httpClient.GetFromJsonAsync<IEnumerable<string>>("api/Skills/levels", _jsonOptions);
             return response ?? Enumerable.Empty<string>();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return Enumerable.Empty<string>();
         }
     }
@@ -139,15 +132,21 @@ public class SkillService : ISkillService
                 var createdSkill = await response.Content.ReadFromJsonAsync<Skill>(_jsonOptions);
                 return createdSkill;
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedAccessException("You must be signed in to create skills.");
+            }
             else
             {
-                Console.WriteLine($"Failed to create skill. Status: {response.StatusCode}");
                 return null;
             }
         }
-        catch (Exception ex)
+        catch (UnauthorizedAccessException)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
+            throw; // Re-throw to be handled by the UI
+        }
+        catch (Exception)
+        {
             return null;
         }
     }
@@ -160,9 +159,8 @@ public class SkillService : ISkillService
             var response = await _httpClient.PutAsJsonAsync($"api/Skills/{id}", skill, _jsonOptions);
             return response.IsSuccessStatusCode;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return false;
         }
     }
@@ -175,9 +173,8 @@ public class SkillService : ISkillService
             var response = await _httpClient.DeleteAsync($"api/Skills/{id}");
             return response.IsSuccessStatusCode;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return false;
         }
     }

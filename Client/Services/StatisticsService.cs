@@ -36,9 +36,8 @@ public class StatisticsService
                 TotalSkills = stats.TotalSkills
             };
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"Error fetching statistics: {ex.Message}");
             return null;
         }
     }

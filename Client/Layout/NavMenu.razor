@@ -95,18 +95,6 @@
             </div>
         </NavLink>
         
-        <NavLink class="group flex items-center px-4 py-4 text-gray-700 rounded-2xl hover:bg-gradient-to-r hover:from-green-50 hover:to-blue-50 hover:text-green-700 transition-all duration-300 hover:shadow-lg hover:scale-105" 
-                 href="counter">
-            <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center mr-4 group-hover:shadow-lg transition-all duration-300">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                </svg>
-            </div>
-            <div>
-                <div class="font-semibold">Analytics</div>
-                <div class="text-xs text-gray-500">Stats & Metrics</div>
-            </div>
-        </NavLink>
     </nav>
 
     <!-- Bottom section -->
@@ -227,9 +215,8 @@
             isLoadingStats = true;
             statistics = await StatisticsService.GetStatisticsAsync();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"Error loading statistics: {ex.Message}");
             statistics = null;
         }
         finally

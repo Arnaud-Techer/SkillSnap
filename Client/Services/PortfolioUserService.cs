@@ -48,17 +48,14 @@ public class PortfolioUserService : IPortfolioUserService
         }
         catch (HttpRequestException ex)
         {
-            Console.WriteLine($"HTTP error occurred: {ex.Message}");
             throw new Exception($"Failed to connect to the server: {ex.Message}", ex);
         }
         catch (TaskCanceledException ex)
         {
-            Console.WriteLine($"Request was cancelled: {ex.Message}");
             throw new Exception($"Request timeout: {ex.Message}", ex);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             throw new Exception($"Failed to load portfolio users: {ex.Message}", ex);
         }
     }
@@ -70,19 +67,16 @@ public class PortfolioUserService : IPortfolioUserService
             var response = await _httpClient.GetFromJsonAsync<PortfolioUser>($"api/PortfolioUsers/{id}", _jsonOptions);
             return response;
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
-            Console.WriteLine($"HTTP error occurred: {ex.Message}");
             return null;
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException)
         {
-            Console.WriteLine($"Request was cancelled: {ex.Message}");
             return null;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return null;
         }
     }
@@ -121,17 +115,14 @@ public class PortfolioUserService : IPortfolioUserService
         }
         catch (HttpRequestException ex)
         {
-            Console.WriteLine($"HTTP error occurred: {ex.Message}");
             throw new Exception($"Failed to connect to the server: {ex.Message}", ex);
         }
         catch (TaskCanceledException ex)
         {
-            Console.WriteLine($"Request was cancelled: {ex.Message}");
             throw new Exception($"Request timeout: {ex.Message}", ex);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             throw new Exception($"Failed to search portfolio users: {ex.Message}", ex);
         }
     }
@@ -143,19 +134,16 @@ public class PortfolioUserService : IPortfolioUserService
             var response = await _httpClient.GetFromJsonAsync<object>($"api/PortfolioUsers/{id}/statistics", _jsonOptions);
             return response;
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
-            Console.WriteLine($"HTTP error occurred: {ex.Message}");
             return null;
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException)
         {
-            Console.WriteLine($"Request was cancelled: {ex.Message}");
             return null;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return null;
         }
     }
@@ -167,19 +155,16 @@ public class PortfolioUserService : IPortfolioUserService
             var response = await _httpClient.GetFromJsonAsync<IEnumerable<Project>>($"api/PortfolioUsers/{id}/projects", _jsonOptions);
             return response ?? Enumerable.Empty<Project>();
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
-            Console.WriteLine($"HTTP error occurred: {ex.Message}");
             return Enumerable.Empty<Project>();
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException)
         {
-            Console.WriteLine($"Request was cancelled: {ex.Message}");
             return Enumerable.Empty<Project>();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return Enumerable.Empty<Project>();
         }
     }
@@ -191,19 +176,16 @@ public class PortfolioUserService : IPortfolioUserService
             var response = await _httpClient.GetFromJsonAsync<IEnumerable<Skill>>($"api/PortfolioUsers/{id}/skills", _jsonOptions);
             return response ?? Enumerable.Empty<Skill>();
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
-            Console.WriteLine($"HTTP error occurred: {ex.Message}");
             return Enumerable.Empty<Skill>();
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException)
         {
-            Console.WriteLine($"Request was cancelled: {ex.Message}");
-            return null;
+            return Enumerable.Empty<Skill>();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return Enumerable.Empty<Skill>();
         }
     }
@@ -220,25 +202,29 @@ public class PortfolioUserService : IPortfolioUserService
                 var createdUser = await response.Content.ReadFromJsonAsync<PortfolioUser>(_jsonOptions);
                 return createdUser;
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedAccessException("You must be signed in to create portfolios.");
+            }
             else
             {
-                Console.WriteLine($"Failed to create portfolio user. Status: {response.StatusCode}");
                 return null;
             }
         }
-        catch (HttpRequestException ex)
+        catch (UnauthorizedAccessException)
         {
-            Console.WriteLine($"HTTP error occurred: {ex.Message}");
+            throw; // Re-throw to be handled by the UI
+        }
+        catch (HttpRequestException)
+        {
             return null;
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException)
         {
-            Console.WriteLine($"Request was cancelled: {ex.Message}");
             return null;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return null;
         }
     }
@@ -251,19 +237,16 @@ public class PortfolioUserService : IPortfolioUserService
             var response = await _httpClient.PutAsJsonAsync($"api/PortfolioUsers/{id}", portfolioUser, _jsonOptions);
             return response.IsSuccessStatusCode;
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
-            Console.WriteLine($"HTTP error occurred: {ex.Message}");
             return false;
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException)
         {
-            Console.WriteLine($"Request was cancelled: {ex.Message}");
             return false;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return false;
         }
     }
@@ -276,19 +259,16 @@ public class PortfolioUserService : IPortfolioUserService
             var response = await _httpClient.DeleteAsync($"api/PortfolioUsers/{id}");
             return response.IsSuccessStatusCode;
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
-            Console.WriteLine($"HTTP error occurred: {ex.Message}");
             return false;
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException)
         {
-            Console.WriteLine($"Request was cancelled: {ex.Message}");
             return false;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return false;
         }
     }
@@ -301,19 +281,16 @@ public class PortfolioUserService : IPortfolioUserService
             var response = await _httpClient.GetAsync($"api/PortfolioUsers/{id}");
             return response.IsSuccessStatusCode;
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
-            Console.WriteLine($"HTTP error occurred: {ex.Message}");
             return false;
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException)
         {
-            Console.WriteLine($"Request was cancelled: {ex.Message}");
             return false;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
             return false;
         }
     }

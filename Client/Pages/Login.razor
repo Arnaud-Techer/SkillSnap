@@ -106,12 +106,7 @@
 
     private async Task HandleLogin()
     {
-        Console.WriteLine("HandleLogin called");
-        Console.WriteLine($"Email: {AuthViewModel.LoginEmail}");
-        Console.WriteLine($"Password: {AuthViewModel.LoginPassword}");
-        
         var success = await AuthViewModel.LoginAsync();
-        Console.WriteLine($"Login result: {success}");
         
         if (success)
         {
@@ -123,7 +118,6 @@
         }
         else
         {
-            Console.WriteLine($"Login failed: {AuthViewModel.LoginErrorMessage}");
         }
     }
 
