@@ -1,0 +1,249 @@
+/* AddPortfolioModal.razor scoped styles */
+
+.modal-content {
+    background-color: white;
+    border-radius: 0.5rem;
+    max-width: 64rem;
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
+}
+
+.modal-header {
+    background: linear-gradient(to right, #3b82f6, #8b5cf6);
+    padding: 1.5rem;
+    color: white;
+}
+
+.modal-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.modal-title-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.75rem;
+}
+
+.modal-close-button {
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 0.25rem;
+}
+
+.modal-close-button:hover {
+    color: #e5e7eb;
+}
+
+.modal-close-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.form-section {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    resize: none;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-help-text {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+.preview-grid {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .preview-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.preview-section {
+    background-color: #f9fafb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.preview-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.preview-button {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.preview-button-icon {
+    width: 1rem;
+    height: 1rem;
+    display: inline;
+    margin-right: 0.25rem;
+}
+
+.preview-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.preview-item {
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+}
+
+.preview-item-title {
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.preview-item-description {
+    font-size: 0.875rem;
+    color: #4b5563;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.preview-item-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.preview-item-name {
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.preview-item-level {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+}
+
+.preview-empty {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.action-button {
+    padding: 0.75rem 1.5rem;
+}
+
+/* Skill level colors */
+.level-beginner {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.level-novice {
+    background-color: #fed7aa;
+    color: #9a3412;
+}
+
+.level-intermediate {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.level-advanced {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.level-expert {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.level-master {
+    background-color: #e9d5ff;
+    color: #6b21a8;
+}
+
+.level-default {
+    background-color: #f3f4f6;
+    color: #1f2937;
+}
