@@ -26,8 +26,8 @@
                 
                 <!-- Search Bar -->
                 <div class="flex-1 max-w-md mx-8">
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <div class="search-container">
+                        <div class="search-icon">
                             @if (isSearching)
                             {
                                 <svg class="animate-spin h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24">
@@ -48,11 +48,10 @@
                                @onkeydown="HandleSearchKeyDown"
                                placeholder="Search portfolios by name..." 
                                disabled="@isSearching"
-                               class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-50 disabled:cursor-not-allowed" />
+                               class="search-input" />
                         @if (!string.IsNullOrWhiteSpace(searchQuery))
                         {
-                            <button @onclick="ClearSearch" 
-                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+                            <button @onclick="ClearSearch" class="search-clear">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
@@ -64,14 +63,14 @@
                 <div class="flex items-center space-x-4">
                     @if (AuthViewModel.IsAuthenticated)
                     {
-                        <button @onclick="OpenAddPortfolioModal" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
-                            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button @onclick="OpenAddPortfolioModal" class="btn-primary btn-with-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                             </svg>
                             Add Portfolio
                         </button>
-                        <button @onclick="OpenDeletePortfolioModal" class="bg-gradient-to-r from-red-500 to-pink-600 text-white px-6 py-2 rounded-lg font-medium hover:from-red-600 hover:to-pink-700 transition-all duration-200 transform hover:scale-105">
-                            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button @onclick="OpenDeletePortfolioModal" class="btn-danger btn-with-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                             </svg>
                             Delete Portfolio
@@ -79,8 +78,8 @@
                     }
                     else
                     {
-                        <button @onclick="ShowAuthRequiredMessage" class="bg-gradient-to-r from-gray-400 to-gray-500 text-white px-6 py-2 rounded-lg font-medium cursor-not-allowed opacity-75">
-                            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button @onclick="ShowAuthRequiredMessage" class="btn-disabled btn-with-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                             </svg>
                             Sign In Required
@@ -102,22 +101,22 @@
         
         @if (PortfolioUserViewModel.IsLoading)
         {
-            <div class="flex justify-center items-center py-16">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
                 <span class="ml-3 text-lg text-gray-600">Loading portfolios...</span>
             </div>
         }
         else if (!string.IsNullOrEmpty(PortfolioUserViewModel.ErrorMessage))
         {
-            <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-                <div class="text-red-600 mb-2">
+            <div class="error-container">
+                <div class="error-icon">
                     <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
                 <h3 class="text-lg font-semibold text-red-800 mb-2">Error Loading Portfolios</h3>
                 <p class="text-red-600 mb-4">@PortfolioUserViewModel.ErrorMessage</p>
-                <button @onclick="ReloadPortfolios" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                <button @onclick="ReloadPortfolios" class="btn-danger">
                     Try Again
                 </button>
             </div>
@@ -127,7 +126,7 @@
             <!-- Search Results Header -->
             @if (IsShowingSearchResults())
             {
-                <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div class="search-results-header">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
                             <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,7 +145,7 @@
                 </div>
             }
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="portfolio-grid">
                 @foreach (var user in GetDisplayedPortfolios())
                 {
                     <ProfileCard 
@@ -162,8 +161,8 @@
             @if (IsShowingSearchResults())
             {
                 <!-- No Search Results -->
-                <div class="text-center py-16">
-                    <div class="w-24 h-24 mx-auto mb-6 bg-yellow-100 rounded-full flex items-center justify-center">
+                <div class="empty-state-container">
+                    <div class="empty-state-icon-sm">
                         <svg class="w-12 h-12 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
@@ -173,14 +172,14 @@
                         No portfolios match your search for "<span class="font-semibold">@searchQuery</span>". 
                         Try a different search term or clear the search to see all portfolios.
                     </p>
-                    <div class="flex items-center justify-center space-x-4">
-                        <button @onclick="ClearSearch" class="bg-gray-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-700 transition-all duration-200">
+                    <div class="action-buttons">
+                        <button @onclick="ClearSearch" class="btn-secondary">
                             Clear Search
                         </button>
                         @if (AuthViewModel.IsAuthenticated)
                         {
-                            <button @onclick="OpenAddPortfolioModal" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
-                                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button @onclick="OpenAddPortfolioModal" class="btn-primary btn-with-icon">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
                                 Add Portfolio
@@ -188,8 +187,8 @@
                         }
                         else
                         {
-                            <button @onclick="ShowAuthRequiredMessage" class="bg-gradient-to-r from-gray-400 to-gray-500 text-white px-6 py-3 rounded-lg font-medium cursor-not-allowed opacity-75">
-                                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button @onclick="ShowAuthRequiredMessage" class="btn-disabled btn-with-icon">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                                 </svg>
                                 Sign In Required
@@ -201,8 +200,8 @@
             else
             {
                 <!-- No Portfolios at All -->
-                <div class="text-center py-16">
-                    <div class="bg-gray-100 rounded-full w-32 h-32 flex items-center justify-center mx-auto mb-8">
+                <div class="empty-state-container">
+                    <div class="empty-state-icon">
                         <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
@@ -213,14 +212,14 @@
                     </p>
                     @if (AuthViewModel.IsAuthenticated)
                     {
-                        <button @onclick="OpenAddPortfolioModal" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                        <button @onclick="OpenAddPortfolioModal" class="btn-primary">
                             Create Your Portfolio
                         </button>
                     }
                     else
                     {
-                        <button @onclick="ShowAuthRequiredMessage" class="bg-gradient-to-r from-gray-400 to-gray-500 text-white px-8 py-4 rounded-lg font-semibold cursor-not-allowed opacity-75">
-                            <svg class="w-6 h-6 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button @onclick="ShowAuthRequiredMessage" class="btn-disabled btn-with-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                             </svg>
                             Sign In to Create Portfolio
@@ -232,8 +231,8 @@
     </div>
     @if (showSkillsModal)
     {
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" @onclick="CloseSkillsModal">
-            <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" @onclick:stopPropagation="true">
+        <div class="modal-backdrop" @onclick="CloseSkillsModal">
+            <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden" @onclick:stopPropagation="true">
                 <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <h3 class="text-2xl font-bold flex items-center">
@@ -272,8 +271,8 @@
 
     @if (showProjectsModal)
     {
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" @onclick="CloseProjectsModal">
-            <div class="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden" @onclick:stopPropagation="true">
+        <div class="modal-backdrop" @onclick="CloseProjectsModal">
+            <div class="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden" @onclick:stopPropagation="true">
                 <div class="bg-gradient-to-r from-green-500 to-blue-600 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <h3 class="text-2xl font-bold flex items-center">

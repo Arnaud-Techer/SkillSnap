@@ -1,8 +1,8 @@
 @using Shared.Models
 @using Client.Models
 
-<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" @onclick="OnClose">
-    <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" @onclick:stopPropagation="true">
+<div class="modal-backdrop" @onclick="OnClose">
+    <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden" @onclick:stopPropagation="true">
         <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
             <div class="flex items-center justify-between">
                 <h3 class="text-2xl font-bold flex items-center">
@@ -60,7 +60,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h4 class="text-lg font-semibold text-gray-800">Projects (@PendingProjects.Count)</h4>
                             <button type="button" @onclick="OnAddProject" 
-                                    class="bg-green-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-600 transition-colors">
+                                    class="btn-primary text-sm px-3 py-2">
                                 <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
@@ -91,7 +91,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h4 class="text-lg font-semibold text-gray-800">Skills (@PendingSkills.Count)</h4>
                             <button type="button" @onclick="OnAddSkill" 
-                                    class="bg-purple-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-purple-600 transition-colors">
+                                    class="btn-primary text-sm px-3 py-2">
                                 <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
@@ -122,12 +122,10 @@
 
                 <!-- Action Buttons -->
                 <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
-                    <button type="button" @onclick="OnClose" 
-                            class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                    <button type="button" @onclick="OnClose" class="btn-secondary px-6 py-3">
                         Cancel
                     </button>
-                    <button type="submit" 
-                            class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                    <button type="submit" class="btn-primary px-6 py-3">
                         Create Portfolio
                     </button>
                 </div>

@@ -1,0 +1,181 @@
+/* ProfileCard.razor scoped styles */
+
+/* Profile card */
+.profile-card {
+    max-width: 28rem;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+}
+
+/* Header with gradient background */
+.profile-header {
+    height: 8rem;
+    background: linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899);
+    position: relative;
+}
+
+.profile-header-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Profile section */
+.profile-section {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-bottom: 1.5rem;
+    margin-top: -4rem;
+    position: relative;
+}
+
+/* Profile image container */
+.profile-image-container {
+    display: flex;
+    justify-content: center;
+}
+
+.profile-image-wrapper {
+    position: relative;
+}
+
+/* Profile image */
+.profile-image {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+}
+
+/* Online indicator */
+.online-indicator {
+    position: absolute;
+    bottom: -0.25rem;
+    right: -0.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: #10b981;
+    border-radius: 50%;
+    border: 2px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.online-icon {
+    width: 0.75rem;
+    height: 0.75rem;
+    color: white;
+}
+
+/* User info */
+.user-info {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.user-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.user-bio {
+    color: #4b5563;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+/* Stats */
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.stat-value.projects {
+    color: #2563eb;
+}
+
+.stat-value.skills {
+    color: #7c3aed;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Action buttons */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.action-button {
+    width: 100%;
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-button.primary {
+    background: linear-gradient(to right, #3b82f6, #8b5cf6);
+}
+
+.action-button.primary:hover {
+    background: linear-gradient(to right, #2563eb, #7c3aed);
+}
+
+.action-button.secondary {
+    background: linear-gradient(to right, #10b981, #0d9488);
+}
+
+.action-button.secondary:hover {
+    background: linear-gradient(to right, #059669, #0f766e);
+}
+
+.action-button.tertiary {
+    background: linear-gradient(to right, #f97316, #dc2626);
+}
+
+.action-button.tertiary:hover {
+    background: linear-gradient(to right, #ea580c, #b91c1c);
+}
+
+/* Button icon */
+.button-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+}

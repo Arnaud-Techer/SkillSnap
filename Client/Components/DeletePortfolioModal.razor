@@ -2,8 +2,8 @@
 
 @if (ShowModal)
 {
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <div class="modal-backdrop">
+        <div class="bg-white rounded-lg shadow-2xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
             <!-- Modal Header -->
             <div class="flex items-center justify-between p-6 border-b border-gray-200">
                 <h3 class="text-xl font-bold text-gray-800">Delete Portfolio</h3>
@@ -100,12 +100,12 @@
             <!-- Modal Footer -->
             <div class="flex items-center justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
                 <button @onclick="CloseModal" 
-                        class="px-6 py-2 text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                        class="btn-secondary px-6 py-2">
                     Cancel
                 </button>
                 <button @onclick="HandleDelete" 
                         disabled="@(selectedPortfolioId <= 0 || isDeleting)"
-                        class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center">
+                        class="btn-danger px-6 py-2 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center">
                     @if (isDeleting)
                     {
                         <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">

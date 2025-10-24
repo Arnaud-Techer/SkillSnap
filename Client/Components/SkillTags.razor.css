@@ -1,0 +1,180 @@
+/* SkillTags.razor scoped styles */
+
+/* Skills grid */
+.skills-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+/* Skill card */
+.skill-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    padding: 1rem;
+    transition: box-shadow 0.2s;
+}
+
+.skill-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Skill header */
+.skill-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+/* Skill name */
+.skill-name {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 1.125rem;
+}
+
+/* Skill level and actions */
+.skill-level-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Skill level badge */
+.skill-level-badge {
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+}
+
+/* Action buttons */
+.skill-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Action button */
+.skill-action-button {
+    padding: 0.25rem;
+    color: #9ca3af;
+    border-radius: 0.25rem;
+    transition: all 0.2s;
+}
+
+.skill-action-button:hover {
+    color: #2563eb;
+    background-color: #dbeafe;
+}
+
+.skill-action-button.danger:hover {
+    color: #dc2626;
+    background-color: #fee2e2;
+}
+
+/* Progress bar container */
+.progress-container {
+    width: 100%;
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+    height: 0.625rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Progress bar */
+.progress-bar {
+    height: 0.625rem;
+    border-radius: 9999px;
+    transition: all 0.2s ease-out;
+}
+
+/* Level indicator */
+.level-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* Level text */
+.level-text {
+    font-weight: 500;
+}
+
+/* Level icon */
+.level-icon {
+    width: 0.75rem;
+    height: 0.75rem;
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.empty-state-icon {
+    background-color: #f3f4f6;
+    border-radius: 50%;
+    width: 6rem;
+    height: 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.empty-state-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state-description {
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    max-width: 28rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.empty-state-button {
+    background: linear-gradient(to right, #3b82f6, #8b5cf6);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.empty-state-button:hover {
+    background: linear-gradient(to right, #2563eb, #7c3aed);
+}
+
+/* Add skill button */
+.add-skill-button {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.add-skill-btn {
+    background: linear-gradient(to right, #3b82f6, #8b5cf6);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.add-skill-btn:hover {
+    background: linear-gradient(to right, #2563eb, #7c3aed);
+}

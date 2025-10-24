@@ -15,35 +15,34 @@
     
     @if (Projects?.Any() == true)
     {
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="project-grid">
             @foreach (var project in Projects)
             {
-                <div class="group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                <div class="project-card">
                     <!-- Project Image -->
-                    <div class="relative h-48 overflow-hidden">
+                    <div class="project-image-container">
                         <img src="@(string.IsNullOrEmpty(project.ImageUrl) ? "https://via.placeholder.com/400x300/6366f1/ffffff?text=Project" : project.ImageUrl)" 
                              alt="@project.Title" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                        
+                             class="project-image" />
                     </div>
                     
                     <!-- Project Content -->
-                    <div class="p-6">
-                        <div class="flex items-start justify-between mb-2">
-                            <h4 class="text-xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-200 flex-1">
+                    <div class="project-content">
+                        <div class="project-header">
+                            <h4 class="project-title">
                                 @project.Title
                             </h4>
                             <!-- Action buttons -->
-                            <div class="flex items-center space-x-1 ml-3">
+                            <div class="project-actions">
                                 <button @onclick="@(() => OnEditProject.InvokeAsync(project))" 
-                                        class="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-100 rounded transition-colors duration-200"
+                                        class="action-button"
                                         title="Edit project">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                     </svg>
                                 </button>
                                 <button @onclick="@(() => OnDeleteProject.InvokeAsync(project))" 
-                                        class="p-1 text-gray-400 hover:text-red-600 hover:bg-red-100 rounded transition-colors duration-200"
+                                        class="action-button danger"
                                         title="Delete project">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -52,13 +51,13 @@
                             </div>
                         </div>
                         
-                        <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
+                        <p class="project-description">
                             @project.Description
                         </p>
                         
                         <!-- Project ID badge -->
-                        <div class="flex items-center justify-end">
-                            <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">
+                        <div class="project-id-badge">
+                            <span class="project-id">
                                 #@project.Id
                             </span>
                         </div>
@@ -70,9 +69,8 @@
         <!-- Add New Project Button (when projects exist) -->
         @if (OnAddProject.HasDelegate)
         {
-            <div class="text-center mt-8">
-                <button @onclick="OnAddProject" 
-                        class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 flex items-center justify-center mx-auto">
+            <div class="add-project-button">
+                <button @onclick="OnAddProject" class="add-project-btn">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
@@ -84,8 +82,8 @@
         <!-- View All Projects Button -->
         @if (Projects.Count > 6)
         {
-            <div class="text-center mt-4">
-                <button class="bg-white border-2 border-blue-500 text-blue-600 px-8 py-3 rounded-lg font-medium hover:bg-blue-50 transition-all duration-200 transform hover:scale-105">
+            <div class="view-all-button">
+                <button class="view-all-btn">
                     View All Projects
                 </button>
             </div>
@@ -94,20 +92,19 @@
     else
     {
         <!-- Empty State -->
-        <div class="text-center py-12">
-            <div class="bg-gray-100 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+        <div class="empty-state">
+            <div class="empty-state-icon">
                 <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                 </svg>
             </div>
-            <h3 class="text-xl font-semibold text-gray-700 mb-2">No projects yet</h3>
-            <p class="text-gray-500 mb-6 max-w-md mx-auto">
+            <h3 class="empty-state-title">No projects yet</h3>
+            <p class="empty-state-description">
                 Projects will appear here once they're added to your portfolio. Showcase your work and let others see what you can create!
             </p>
             @if (OnAddProject.HasDelegate)
             {
-                <button @onclick="OnAddProject" 
-                        class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                <button @onclick="OnAddProject" class="empty-state-button">
                     <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
