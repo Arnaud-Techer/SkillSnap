@@ -26,12 +26,6 @@
         OnShowAuthRequired="ShowAuthRequiredMessage" />
 
     <div class="portfolio-content">
-        @if (PortfolioUserViewModel.ErrorMessage != null)
-        {
-            <div class="debug-message">
-                <strong>Debug:</strong> ErrorMessage = "@PortfolioUserViewModel.ErrorMessage"
-            </div>
-        }
         
         @if (PortfolioUserViewModel.IsLoading)
         {
@@ -240,20 +234,14 @@
 
     private void OpenAddSkillToExistingModal()
     {
-        Console.WriteLine("[DEBUG] PortfolioUsers.OpenAddSkillToExistingModal called");
-        Console.WriteLine($"[DEBUG] AuthViewModel.IsAuthenticated: {AuthViewModel.IsAuthenticated}");
-        
         if (!AuthViewModel.IsAuthenticated)
         {
-            Console.WriteLine("[DEBUG] User not authenticated, showing auth required message");
             ShowAuthRequiredMessage();
             return;
         }
 
-        Console.WriteLine("[DEBUG] Setting showAddSkillToExistingModal to true");
         showAddSkillToExistingModal = true;
         StateHasChanged();
-        Console.WriteLine("[DEBUG] StateHasChanged called");
     }
 
     private void CloseAddSkillToExistingModal()
@@ -353,17 +341,13 @@
 
     private async Task HandleAddSkillToExisting((string name, string level) formData)
     {
-        Console.WriteLine($"[DEBUG] HandleAddSkillToExisting called with: name='{formData.name}', level='{formData.level}', selectedUserId={selectedUserId}");
-        
         // Prevent multiple simultaneous submissions
         if (isAddingSkill || string.IsNullOrWhiteSpace(formData.name) || string.IsNullOrWhiteSpace(formData.level) || selectedUserId <= 0)
         {
-            Console.WriteLine($"[DEBUG] Early return - isAddingSkill={isAddingSkill}, name empty={string.IsNullOrWhiteSpace(formData.name)}, level empty={string.IsNullOrWhiteSpace(formData.level)}, selectedUserId={selectedUserId}");
             return;
         }
 
         isAddingSkill = true;
-        Console.WriteLine("[DEBUG] Starting skill creation process...");
         
         try
         {
@@ -374,11 +358,7 @@
                 PortfolioUserId = selectedUserId
             };
 
-            Console.WriteLine($"[DEBUG] Created skill object: {skill.Name}, {skill.Level}, PortfolioUserId={skill.PortfolioUserId}");
-            Console.WriteLine("[DEBUG] Calling SkillViewModel.CreateSkillAsync...");
-            
             var result = await SkillViewModel.CreateSkillAsync(skill);
-            Console.WriteLine($"[DEBUG] SkillViewModel.CreateSkillAsync returned: {result != null}");
             
             // Close modal first to prevent re-rendering issues
             CloseAddSkillToExistingModal();
@@ -802,12 +782,10 @@
     // Clear search method for the clear button
     private async Task ClearSearch()
     {
-        Console.WriteLine($"[DEBUG] PortfolioUsers.ClearSearch called - Current searchQuery: '{searchQuery}'");
         searchQuery = string.Empty;
         searchResults = null;
         isSearching = false;
         previousSearchQuery = string.Empty;
-        Console.WriteLine($"[DEBUG] PortfolioUsers.ClearSearch - searchQuery set to: '{searchQuery}'");
 
         // Clear the SearchName property
         PortfolioUserViewModel.SearchName = null;
@@ -815,7 +793,6 @@
         // Reload all portfolios
         await PortfolioUserViewModel.LoadPortfolioUsersAsync();
         StateHasChanged();
-        Console.WriteLine($"[DEBUG] PortfolioUsers.ClearSearch completed - Final searchQuery: '{searchQuery}'");
     }
 
     private void ShowAuthRequiredMessage()

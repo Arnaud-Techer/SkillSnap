@@ -86,31 +86,19 @@ namespace Client.ViewModels
 
         public async Task<Skill?> CreateSkillAsync(Skill skill)
         {
-            Console.WriteLine($"[DEBUG] SkillViewModel.CreateSkillAsync called with skill: {skill.Name}, {skill.Level}, PortfolioUserId={skill.PortfolioUserId}");
             try
             {
-                Console.WriteLine("[DEBUG] Calling _skillService.CreateSkillAsync...");
                 var createdSkill = await _skillService.CreateSkillAsync(skill);
-                Console.WriteLine($"[DEBUG] _skillService.CreateSkillAsync returned: {createdSkill != null}");
                 
                 if (createdSkill != null)
                 {
-                    Console.WriteLine("[DEBUG] Skill created successfully, refreshing skills list...");
                     // Refresh the skills list
                     await LoadSkillsInternalAsync();
-                    Console.WriteLine("[DEBUG] Skills list refreshed");
-                }
-                else
-                {
-                    Console.WriteLine("[DEBUG] Skill creation returned null");
                 }
                 return createdSkill;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[DEBUG] Exception in CreateSkillAsync: {ex.Message}");
-                Console.WriteLine($"[DEBUG] Exception type: {ex.GetType().Name}");
-                Console.WriteLine($"[DEBUG] Stack trace: {ex.StackTrace}");
                 ErrorMessage = $"Failed to create skill: {ex.Message}";
                 return null;
             }

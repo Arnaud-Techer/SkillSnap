@@ -38,7 +38,6 @@
         get => _searchQuery;
         set 
         {
-            Console.WriteLine($"[DEBUG] SearchBar.SearchQuery setter - Old: '{_searchQuery}', New: '{value}'");
             _searchQuery = value;
         }
     }
@@ -59,17 +58,12 @@
     private async Task HandleSearchInput(ChangeEventArgs e)
     {
         var newValue = e.Value?.ToString() ?? string.Empty;
-        Console.WriteLine($"[DEBUG] SearchBar.HandleSearchInput - Old value: '{SearchQuery}', New value: '{newValue}'");
         SearchQuery = newValue;
-        Console.WriteLine($"[DEBUG] SearchBar.HandleSearchInput - SearchQuery after assignment: '{SearchQuery}'");
         await OnSearchQueryChanged.InvokeAsync(SearchQuery);
-        Console.WriteLine($"[DEBUG] SearchBar.HandleSearchInput - OnSearchQueryChanged invoked with: '{SearchQuery}'");
     }
 
     private async Task ClearSearch()
     {
-        Console.WriteLine($"[DEBUG] SearchBar.ClearSearch called - Current SearchQuery: '{SearchQuery}'");
         await OnClearSearch.InvokeAsync();
-        Console.WriteLine($"[DEBUG] SearchBar.ClearSearch completed - SearchQuery after clear: '{SearchQuery}'");
     }
 }

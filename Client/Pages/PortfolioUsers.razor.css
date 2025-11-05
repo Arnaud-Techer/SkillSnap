@@ -11,15 +11,6 @@
     padding: 2rem 1.5rem;
 }
 
-.debug-message {
-    background-color: #fef3c7;
-    border: 1px solid #f59e0b;
-    color: #92400e;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    margin-bottom: 1rem;
-}
-
 .loading-container {
     display: flex;
     justify-content: center;

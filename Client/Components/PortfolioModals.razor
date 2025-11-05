@@ -196,15 +196,11 @@
     
     private async Task HandleAddSkillToExistingWrapper((string name, string level) formData)
     {
-        Console.WriteLine($"[DEBUG] PortfolioModals.HandleAddSkillToExistingWrapper called with: name='{formData.name}', level='{formData.level}'");
-        Console.WriteLine($"[DEBUG] OnAddSkillToExisting.HasDelegate: {OnAddSkillToExisting.HasDelegate}");
         await OnAddSkillToExisting.InvokeAsync(formData);
-        Console.WriteLine("[DEBUG] PortfolioModals.HandleAddSkillToExistingWrapper completed");
     }
     
     protected override void OnParametersSet()
     {
-        Console.WriteLine($"[DEBUG] PortfolioModals.OnParametersSet - ShowAddSkillToExistingModal: {ShowAddSkillToExistingModal}");
         base.OnParametersSet();
     }
     [Parameter] public EventCallback<Skill> OnEditSkill { get; set; }
