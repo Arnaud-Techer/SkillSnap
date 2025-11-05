@@ -1,5 +1,31 @@
 /* SkillTags.razor scoped styles */
 
+/* Container */
+.skills-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Skills title */
+.skills-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.skills-title-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.5rem;
+    color: #2563eb;
+    font-size: 1.5rem;
+    display: block;
+}
+
 /* Skills grid */
 .skills-grid {
     display: grid;
@@ -49,6 +75,41 @@
     border-radius: 9999px;
 }
 
+.skill-level-badge.level-beginner {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.skill-level-badge.level-novice {
+    background-color: #fed7aa;
+    color: #9a3412;
+}
+
+.skill-level-badge.level-intermediate {
+    background-color: #fef3c7;
+    color: #854d0e;
+}
+
+.skill-level-badge.level-advanced {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.skill-level-badge.level-expert {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.skill-level-badge.level-master {
+    background-color: #e9d5ff;
+    color: #6b21a8;
+}
+
+.skill-level-badge.level-default {
+    background-color: #f3f4f6;
+    color: #1f2937;
+}
+
 /* Action buttons */
 .skill-actions {
     display: flex;
@@ -62,6 +123,9 @@
     color: #9ca3af;
     border-radius: 0.25rem;
     transition: all 0.2s;
+    border: none;
+    background: none;
+    cursor: pointer;
 }
 
 .skill-action-button:hover {
@@ -72,6 +136,13 @@
 .skill-action-button.danger:hover {
     color: #dc2626;
     background-color: #fee2e2;
+}
+
+.skill-action-icon {
+    width: 1rem;
+    height: 1rem;
+    font-size: 1rem;
+    display: block;
 }
 
 /* Progress bar container */
@@ -90,6 +161,34 @@
     transition: all 0.2s ease-out;
 }
 
+.progress-bar.progress-beginner {
+    background: linear-gradient(to right, #f87171, #ef4444);
+}
+
+.progress-bar.progress-novice {
+    background: linear-gradient(to right, #fb923c, #f97316);
+}
+
+.progress-bar.progress-intermediate {
+    background: linear-gradient(to right, #facc15, #eab308);
+}
+
+.progress-bar.progress-advanced {
+    background: linear-gradient(to right, #60a5fa, #3b82f6);
+}
+
+.progress-bar.progress-expert {
+    background: linear-gradient(to right, #34d399, #10b981);
+}
+
+.progress-bar.progress-master {
+    background: linear-gradient(to right, #a78bfa, #8b5cf6);
+}
+
+.progress-bar.progress-default {
+    background: linear-gradient(to right, #9ca3af, #6b7280);
+}
+
 /* Level indicator */
 .level-indicator {
     display: flex;
@@ -104,10 +203,26 @@
     font-weight: 500;
 }
 
+/* Level stars */
+.level-stars {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
 /* Level icon */
 .level-icon {
     width: 0.75rem;
     height: 0.75rem;
+    border-radius: 50%;
+}
+
+.level-icon.level-star-filled {
+    background-color: #facc15;
+}
+
+.level-icon.level-star-empty {
+    background-color: #e5e7eb;
 }
 
 /* Empty state */
@@ -126,6 +241,14 @@
     align-items: center;
     justify-content: center;
     margin: 0 auto 1.5rem;
+}
+
+.empty-state-icon-text {
+    width: 4rem;
+    height: 4rem;
+    color: #d1d5db;
+    font-size: 4rem;
+    display: block;
 }
 
 .empty-state-title {
@@ -150,10 +273,20 @@
     border-radius: 0.5rem;
     font-weight: 500;
     transition: background-color 0.2s;
+    border: none;
+    cursor: pointer;
 }
 
 .empty-state-button:hover {
     background: linear-gradient(to right, #2563eb, #7c3aed);
+}
+
+.empty-state-button-icon {
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.5rem;
+    font-size: 1.25rem;
 }
 
 /* Add skill button */
@@ -173,8 +306,18 @@
     align-items: center;
     justify-content: center;
     margin: 0 auto;
+    border: none;
+    cursor: pointer;
 }
 
 .add-skill-btn:hover {
     background: linear-gradient(to right, #2563eb, #7c3aed);
+}
+
+.add-skill-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.5rem;
+    font-size: 1.25rem;
+    display: block;
 }

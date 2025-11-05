@@ -1,8 +1,8 @@
 ﻿@using Shared.Models
 
-<div class="space-y-4">
-    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
-        <span class="w-6 h-6 mr-2 text-blue-600">💡</span>
+<div class="skills-container">
+    <h3 class="skills-title">
+        <span class="skills-title-icon">💡</span>
         Skills & Expertise
     </h3>
     
@@ -15,7 +15,7 @@
                     <div class="skill-header">
                         <h4 class="skill-name">@skill.Name</h4>
                         <div class="skill-level-actions">
-                            <span class="skill-level-badge @GetLevelColor(skill.Level)">
+                            <span class="skill-level-badge level-@(skill.Level?.ToLower() ?? "default")">
                                 @skill.Level
                             </span>
                             <!-- Action buttons -->
@@ -23,12 +23,12 @@
                                 <button @onclick="@(() => OnEditSkill.InvokeAsync(skill))" 
                                         class="skill-action-button"
                                         title="Edit skill">
-                                    <span class="w-4 h-4">✏️</span>
+                                    <span class="skill-action-icon">✏️</span>
                                 </button>
                                 <button @onclick="@(() => OnDeleteSkill.InvokeAsync(skill))" 
                                         class="skill-action-button danger"
                                         title="Delete skill">
-                                    <span class="w-4 h-4">🗑️</span>
+                                    <span class="skill-action-icon">🗑️</span>
                                 </button>
                             </div>
                         </div>
@@ -36,17 +36,17 @@
                     
                     <!-- Progress bar -->
                     <div class="progress-container">
-                        <div class="progress-bar @GetProgressBarColor(skill.Level)" 
+                        <div class="progress-bar progress-@(skill.Level?.ToLower() ?? "default")" 
                              style="width: @GetProgressPercentage(skill.Level)%"></div>
                     </div>
                     
                     <!-- Level indicator with icon -->
                     <div class="level-indicator">
                         <span class="level-text">Beginner</span>
-                        <div class="flex items-center space-x-1">
+                        <div class="level-stars">
                             @for (int i = 1; i <= 5; i++)
                             {
-                                <div class="level-icon rounded-full @(GetStarColor(skill.Level, i))"></div>
+                                <div class="level-icon level-star-@(GetStarColor(skill.Level, i))"></div>
                             }
                         </div>
                         <span class="level-text">Expert</span>
@@ -60,7 +60,7 @@
         {
             <div class="add-skill-button">
                 <button @onclick="OnAddSkill" class="add-skill-btn">
-                    <span class="w-5 h-5 mr-2">➕</span>
+                    <span class="add-skill-icon">➕</span>
                     Add New Skill
                 </button>
             </div>
@@ -70,14 +70,14 @@
     {
         <div class="empty-state">
             <div class="empty-state-icon">
-                <span class="w-16 h-16 text-gray-300">💡</span>
+                <span class="empty-state-icon-text">💡</span>
             </div>
             <h3 class="empty-state-title">No skills added yet</h3>
             <p class="empty-state-description">Skills will appear here once they're added to your profile.</p>
             @if (OnAddSkill.HasDelegate)
             {
                 <button @onclick="OnAddSkill" class="empty-state-button">
-                    <span class="w-5 h-5 inline mr-2">➕</span>
+                    <span class="empty-state-button-icon">➕</span>
                     Add Your First Skill
                 </button>
             }
@@ -98,33 +98,6 @@
     [Parameter]
     public EventCallback<Skill> OnDeleteSkill { get; set; }
 
-    private string GetLevelColor(string level)
-    {
-        return level?.ToLower() switch
-        {
-            "beginner" => "bg-red-100 text-red-800",
-            "novice" => "bg-orange-100 text-orange-800",
-            "intermediate" => "bg-yellow-100 text-yellow-800",
-            "advanced" => "bg-blue-100 text-blue-800",
-            "expert" => "bg-green-100 text-green-800",
-            "master" => "bg-purple-100 text-purple-800",
-            _ => "bg-gray-100 text-gray-800"
-        };
-    }
-
-    private string GetProgressBarColor(string level)
-    {
-        return level?.ToLower() switch
-        {
-            "beginner" => "bg-gradient-to-r from-red-400 to-red-500",
-            "novice" => "bg-gradient-to-r from-orange-400 to-orange-500",
-            "intermediate" => "bg-gradient-to-r from-yellow-400 to-yellow-500",
-            "advanced" => "bg-gradient-to-r from-blue-400 to-blue-500",
-            "expert" => "bg-gradient-to-r from-green-400 to-green-500",
-            "master" => "bg-gradient-to-r from-purple-400 to-purple-500",
-            _ => "bg-gradient-to-r from-gray-400 to-gray-500"
-        };
-    }
 
     private int GetProgressPercentage(string level)
     {
@@ -153,6 +126,6 @@
             _ => 0
         };
 
-        return starNumber <= levelValue ? "bg-yellow-400" : "bg-gray-200";
+        return starNumber <= levelValue ? "filled" : "empty";
     }
 }

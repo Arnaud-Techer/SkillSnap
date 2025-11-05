@@ -178,4 +178,51 @@
     width: 1rem;
     height: 1rem;
     margin-right: 0.5rem;
+    font-size: 1rem;
+    display: block;
+}
+
+/* Quick preview section */
+.quick-preview-section {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-bottom: 1rem;
+}
+
+.quick-preview-card {
+    background: linear-gradient(to right, #f9fafb, #eff6ff);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border: 1px solid #f3f4f6;
+}
+
+.quick-preview-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.quick-preview-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+    color: #2563eb;
+    font-size: 1rem;
+    display: block;
+}
+
+.quick-preview-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #4b5563;
+}
+
+.quick-preview-description {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
 }

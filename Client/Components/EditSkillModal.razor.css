@@ -183,3 +183,67 @@
 .submit-button:hover {
     background: linear-gradient(to right, #1d4ed8, #6d28d9);
 }
+
+/* Level Preview */
+.level-preview-container {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background-color: #f9fafb;
+    border-radius: 0.5rem;
+}
+
+.level-preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.level-preview-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.level-preview-percentage {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.level-progress-bar-wrapper {
+    width: 100%;
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+    height: 0.5rem;
+}
+
+.level-progress-bar {
+    height: 0.5rem;
+    border-radius: 9999px;
+    transition: all 0.5s;
+}
+
+/* Submit Button Icons */
+.submit-button-spinner {
+    animation: spin 1s linear infinite;
+    margin-left: -0.25rem;
+    margin-right: 0.5rem;
+    height: 1rem;
+    width: 1rem;
+    color: white;
+}
+
+.submit-button-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

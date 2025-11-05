@@ -62,17 +62,17 @@
     </div>
     
     <!-- Quick preview section -->
-    <div class="px-6 pb-4">
-        <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg p-4 border border-gray-100">
-            <h3 class="text-sm font-semibold text-gray-700 mb-2 flex items-center">
-                <span class="w-4 h-4 mr-2 text-blue-600">ℹ️</span>
+    <div class="quick-preview-section">
+        <div class="quick-preview-card">
+            <h3 class="quick-preview-title">
+                <span class="quick-preview-icon">ℹ️</span>
                 Quick Overview
             </h3>
-            <div class="flex justify-between text-xs text-gray-600">
+            <div class="quick-preview-stats">
                 <span>@(User?.ProjectCount ?? 0) Projects Available</span>
                 <span>@(User?.SkillCount ?? 0) Skills Listed</span>
             </div>
-            <p class="text-xs text-gray-500 mt-2">
+            <p class="quick-preview-description">
                 Click the buttons above to explore detailed information about this developer's work and expertise.
             </p>
         </div>

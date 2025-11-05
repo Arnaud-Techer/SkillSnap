@@ -1,12 +1,12 @@
 ﻿@using Shared.Models
 
-<div class="space-y-6">
-    <div class="flex items-center justify-between">
-        <h3 class="text-xl font-bold text-gray-800 flex items-center">
-            <span class="w-6 h-6 mr-2 text-blue-600">📁</span>
+<div class="projects-container">
+    <div class="projects-header">
+        <h3 class="projects-title">
+            <span class="projects-title-icon">📁</span>
             Featured Projects
         </h3>
-        <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+        <span class="projects-count-badge">
             @(Projects?.Count ?? 0) projects
         </span>
     </div>
@@ -35,12 +35,12 @@
                                 <button @onclick="@(() => OnEditProject.InvokeAsync(project))" 
                                         class="action-button"
                                         title="Edit project">
-                                    <span class="w-4 h-4">✏️</span>
+                                    <span class="action-button-icon">✏️</span>
                                 </button>
                                 <button @onclick="@(() => OnDeleteProject.InvokeAsync(project))" 
                                         class="action-button danger"
                                         title="Delete project">
-                                    <span class="w-4 h-4">🗑️</span>
+                                    <span class="action-button-icon">🗑️</span>
                                 </button>
                             </div>
                         </div>
@@ -65,7 +65,7 @@
         {
             <div class="add-project-button">
                 <button @onclick="OnAddProject" class="add-project-btn">
-                    <span class="w-5 h-5 mr-2">➕</span>
+                    <span class="add-project-icon">➕</span>
                     Add New Project
                 </button>
             </div>
@@ -86,7 +86,7 @@
         <!-- Empty State -->
         <div class="empty-state">
             <div class="empty-state-icon">
-                <span class="w-12 h-12 text-gray-400">📁</span>
+                <span class="empty-state-icon-text">📁</span>
             </div>
             <h3 class="empty-state-title">No projects yet</h3>
             <p class="empty-state-description">
@@ -95,7 +95,7 @@
             @if (OnAddProject.HasDelegate)
             {
                 <button @onclick="OnAddProject" class="empty-state-button">
-                    <span class="w-5 h-5 inline mr-2">➕</span>
+                    <span class="empty-state-button-icon">➕</span>
                     Add Your First Project
                 </button>
             }

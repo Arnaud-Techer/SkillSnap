@@ -82,14 +82,14 @@
                             <!-- Image Preview -->
                             @if (!string.IsNullOrWhiteSpace(localProjectImageUrl))
                             {
-                                <div class="mt-3">
-                                    <div class="text-xs text-gray-600 mb-2">Preview:</div>
-                                    <div class="w-full h-32 bg-gray-100 rounded-lg overflow-hidden">
+                                <div class="image-preview-container">
+                                    <div class="image-preview-label">Preview:</div>
+                                    <div class="image-preview-wrapper">
                                         <img src="@localProjectImageUrl" 
                                              alt="Project preview" 
-                                             class="w-full h-full object-cover"
+                                             class="image-preview"
                                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                                        <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm" style="display: none;">
+                                        <div class="image-preview-error">
                                             Invalid image URL
                                         </div>
                                     </div>
@@ -111,12 +111,12 @@
                         class="submit-button action-button">
                     @if (isSubmitting)
                     {
-                        <span class="animate-spin -ml-1 mr-2 h-4 w-4 text-white">⏳</span>
+                        <span class="submit-button-spinner">⏳</span>
                         <span>Updating...</span>
                     }
                     else
                     {
-                        <span class="w-4 h-4 mr-2">✓</span>
+                        <span class="submit-button-icon">✓</span>
                         <span>Update Project</span>
                     }
                 </button>

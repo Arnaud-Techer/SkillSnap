@@ -66,13 +66,13 @@
                             <!-- Level Preview -->
                             @if (!string.IsNullOrEmpty(localSkillLevel))
                             {
-                                <div class="mt-3 p-3 bg-gray-50 rounded-lg">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <span class="text-sm font-medium text-gray-700">@localSkillLevel</span>
-                                        <span class="text-sm text-gray-500">@GetProgressPercentage(localSkillLevel)%</span>
+                                <div class="level-preview-container">
+                                    <div class="level-preview-header">
+                                        <span class="level-preview-label">@localSkillLevel</span>
+                                        <span class="level-preview-percentage">@GetProgressPercentage(localSkillLevel)%</span>
                                     </div>
-                                    <div class="w-full bg-gray-200 rounded-full h-2">
-                                        <div class="h-2 rounded-full transition-all duration-500 @GetProgressBarColor(localSkillLevel)" 
+                                    <div class="level-progress-bar-wrapper">
+                                        <div class="level-progress-bar @GetProgressBarColor(localSkillLevel)" 
                                              style="width: @GetProgressPercentage(localSkillLevel)%"></div>
                                     </div>
                                 </div>
@@ -93,12 +93,12 @@
                         class="submit-button action-button">
                     @if (isSubmitting)
                     {
-                        <span class="animate-spin -ml-1 mr-2 h-4 w-4 text-white">⏳</span>
+                        <span class="submit-button-spinner">⏳</span>
                         <span>Updating...</span>
                     }
                     else
                     {
-                        <span class="w-4 h-4 mr-2">✓</span>
+                        <span class="submit-button-icon">✓</span>
                         <span>Update Skill</span>
                     }
                 </button>

@@ -183,3 +183,64 @@
 .submit-button:hover {
     background: linear-gradient(to right, #15803d, #1d4ed8);
 }
+
+/* Image Preview */
+.image-preview-container {
+    margin-top: 0.75rem;
+}
+
+.image-preview-label {
+    font-size: 0.75rem;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+}
+
+.image-preview-wrapper {
+    width: 100%;
+    height: 8rem;
+    background-color: #f3f4f6;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-preview-error {
+    width: 100%;
+    height: 100%;
+    background-color: #e5e7eb;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* Submit Button Icons */
+.submit-button-spinner {
+    animation: spin 1s linear infinite;
+    margin-left: -0.25rem;
+    margin-right: 0.5rem;
+    height: 1rem;
+    width: 1rem;
+    color: white;
+}
+
+.submit-button-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
